@@ -3,7 +3,7 @@ import Layout from "./components/Layout";
 import Footer from "./components/Footer";
 import "./index.css";
 
-import LayoutBg1 from "./assets/thoth-tarot-the-fool.jpg";
+import LayoutBg1 from "./assets/thoth-tarot-the fool.jpg";
 import LayoutBg2 from "./assets/foolcard3.jpg";
 
 

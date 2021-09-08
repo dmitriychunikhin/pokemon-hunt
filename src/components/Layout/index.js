@@ -1,7 +1,7 @@
 import style from "./style.module.css"
 
 const Layout = ({ title, descr, urlBg, colorBg }) => {
-    const layoutBg = { backgroundImage: urlBg && `url(${urlBg})`, backgroundColor: colorBg };
+    const layoutBg = { backgroundImage: urlBg && `url("${urlBg}")`, backgroundColor: colorBg };
     return (
         <section className={style.root} style={layoutBg}>
             <div className={style.wrapper}>
