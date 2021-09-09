@@ -10,9 +10,9 @@ import LayoutBg2 from "./assets/foolcard3.jpg";
 const App = () => (
   <>
     <Header title="A tarot deck" descr="brief descriptions of the trump cards" />
-    <Layout urlBg={LayoutBg1} title="The Fool" descr="The trump of Crowley tarot deck numbered 0" />
-    <Layout colorBg="red"/>
-    <Layout urlBg={LayoutBg2} title="The Fool" descr="The trump of Marseille tarot deck numbered 0" />
+    <Layout urlBg={LayoutBg1} title="The Fool of the 20th century" descr="The trump of Crowley's tarot deck numbered 0" />
+    <Layout colorBg="red" title="The Fool of early 20th century" descr="The card from Waite's deck was supposed to be here, if the deck hadn't been cursed" />
+    <Layout urlBg={LayoutBg2} title="The Fool of the Early modern period" descr="The trump of Marseilles tarot deck numbered 0" />
     <Footer />
   </>
 );
