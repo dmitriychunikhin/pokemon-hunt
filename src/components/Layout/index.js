@@ -10,7 +10,7 @@ const Layout = ({ title, descr, urlBg, colorBg }) => {
                         (
                             <div className={style.title}>
                                 <h3>{title}</h3>
-                                <span className="separator"></span>
+                                <span className={style.separator}></span>
                             </div>
                         )
                     }
