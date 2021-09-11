@@ -1,18 +1,62 @@
+import "./index.css";
+import "./App.css";
+
 import Header from "./components/Header";
 import Layout from "./components/Layout";
 import Footer from "./components/Footer";
-import "./index.css";
+import PockemonCard from "./components/PokemonCard";
 
-import LayoutBg1 from "./assets/thoth-tarot-the fool.jpg";
-import LayoutBg2 from "./assets/foolcard3.jpg";
+import LayoutBg3 from "./assets/bg1.jpg";
+
+import pokemonList from "./assets/Pokemons.json";
 
 
 const App = () => (
   <>
-    <Header title="A tarot deck" descr="brief descriptions of the trump cards" />
-    <Layout urlBg={LayoutBg1} title="The Fool of the 20th century" descr="The trump of Crowley's tarot deck numbered 0" />
-    <Layout colorBg="red" title="The Fool of early 20th century" descr="The card from Waite's deck was supposed to be here, if the deck hadn't been cursed" />
-    <Layout urlBg={LayoutBg2} title="The Fool of the Early modern period" descr="The trump of Marseilles tarot deck numbered 0" />
+    <Header title="Pokemon hunt" descr="The game of the year" />
+
+    <Layout
+      id="rules"
+      title="The rules"
+      urlBg={LayoutBg3}
+    >
+      <p><s>In the game two players face off against one another, one side playing as "blue", the other as "red" on a 3x3 grid.</s></p>
+      <p><s>Each player has five cards in a hand and the aim is to capture the opponent's cards by turning them into the player's own color of red or blue.</s></p>
+      <p>Click on the card until the pokemon begs you for mercy</p>
+    </Layout>
+
+    <Layout
+      id="cards"
+      colorTitle="#fafafa"
+      colorBg="#252934"
+      title="Start gaming now!"
+    >
+      <div className="flex">
+
+        {
+          pokemonList.map(item =>
+            <PockemonCard
+              key={item.id}
+              id={item.id}
+              name={item.name}
+              type={item.type}
+              img={item.img}
+              values={item.values}
+            />
+          )
+        }
+
+      </div>
+    </Layout>
+
+    <Layout
+      id="about"
+      title="The word of encouragement"
+      urlBg={LayoutBg3}
+    >
+      <p>To be a grinder is not a disgrace</p>
+    </Layout>
+
     <Footer />
   </>
 );
