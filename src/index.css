@@ -19,6 +19,8 @@ body {
     font-size: 62.5%;
     font-family: 'Overlock', Arial, Helvetica, sans-serif;
     overflow-x: hidden;
+    min-width: 400px;
+    
 }
 
 a,
