@@ -4,12 +4,12 @@ const Menu = ({ isActive, onSetPage }) => {
 
     const handleHomeClick = (evt) => {
         evt.preventDefault();
-        onSetPage("home");
+        onSetPage && onSetPage("home");
     }
 
     const handleGameClick = (evt) => {
         evt.preventDefault();
-        onSetPage("game");
+        onSetPage && onSetPage("game");
     }
 
     return (

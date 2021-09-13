@@ -6,7 +6,7 @@ const GamePage = ({ onSetPage }) => {
         <section className={style.root}>
             <div className={style.container}>
                 <p><h1>It's the game page</h1></p>
-                <button onClick={onSetPage}>Go home</button>
+                <button onClick={() => { onSetPage("home") }}>Go home</button>
             </div>
         </section>
     );
