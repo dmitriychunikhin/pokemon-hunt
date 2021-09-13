@@ -3,7 +3,7 @@ import { useState } from "react";
 import Menu from "../Menu";
 import NavBar from "../NavBar";
 
-const MenuHeader = () => {
+const MenuHeader = ({ onSetPage }) => {
 
     const [isActive, setActive] = useState(undefined);
 
@@ -13,7 +13,7 @@ const MenuHeader = () => {
 
     return (
         <>
-            <Menu isActive={isActive} />
+            <Menu isActive={isActive} onSetPage={onSetPage} />
 
             <NavBar
                 onClickButton={handleClickButton}

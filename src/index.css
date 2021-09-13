@@ -37,23 +37,56 @@ a:active {
     color: #f300b4;
 }
 
-button.splashButton {
+button,
+button:visited {
+    width: 100%;
+    max-width: 240px;
     padding: 1rem;
-    font-size: 12pt;
-    opacity: 50%;
-    background-color:brown;
-    color: white;
-    font-weight: bold;
+    border: 1px solid #fafafa;
+    color: #fafafa;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 1rem;
+    transition: all ease-in-out .25s;
     cursor: pointer;
-    clip-path: polygon(10% 15%, 0% 100%, 10% 80%, 50% 100%, 90% 80%, 100% 100%, 90% 25%,  100% 0%, 50% 10%);
-    transition: all 1s;
-
+    box-sizing: border-box;
 }
 
-button.splashButton:hover {
-    opacity: 100%;
-    clip-path: polygon(10% 20%, 15% 100%, 25% 75%, 50% 100%, 80% 80%, 95% 100%, 90% 25%,  100% 0%, 50% 10%);
-    padding: 2rem;
-    transition: opacity 1s linear, clip-path 2s 1s linear, padding 2s 1s linear;
-    
+button,
+button:visited {
+    background: #f300b4;
+    border: 1px solid transparent;
+    color: #fafafa;
+    font-weight: bold;
+    outline: none;
+}
+
+button:hover {
+    background: transparent;
+    border: 1px solid #f300b4;
+    color: #f300b4;
+    transition: all ease-in-out 0s;
+    outline: none;
+}
+
+button:active {
+    background: transparent;
+    border: 1px solid #f300b4;
+    color: #f300b4;
+    transition: all ease-in-out 0s;
+    outline: none;
+    padding: 1.05rem 1rem calc(.95rem - 1px) calc(1rem - 1px);
+    border-top: 2px solid;
+    border-right: 2px solid;
+}
+
+button:disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background: #f300b4;
+    border: 1px solid transparent;
+    color: #fafafa;
 }

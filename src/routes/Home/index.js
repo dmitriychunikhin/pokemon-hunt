@@ -13,19 +13,14 @@ import pokemonList from "../../assets/Pokemons.json";
 
 const HomePage = ({ onSetPage }) => {
 
-  const handleHeaderClickButton = () => {
-    onSetPage && onSetPage("game");
-  }
-
   return (
     <>
       
-      <MenuHeader />
+      <MenuHeader onSetPage={onSetPage} />
 
       <Header
         title="Pokemon hunt"
         descr="The game of the year"
-        onClickButton={handleHeaderClickButton}
       />
 
       <Layout

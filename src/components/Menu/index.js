@@ -1,6 +1,16 @@
 import cn from "classnames";
 import style from "./style.module.css";
-const Menu = ({ isActive }) => {
+const Menu = ({ isActive, onSetPage }) => {
+
+    const handleHomeClick = (evt) => {
+        evt.preventDefault();
+        onSetPage("home");
+    }
+
+    const handleGameClick = (evt) => {
+        evt.preventDefault();
+        onSetPage("game");
+    }
 
     return (
         <div className={cn(style.menuContainer, {[style.active]: isActive===true, [style.deactive]: isActive===false})}>
@@ -8,12 +18,12 @@ const Menu = ({ isActive }) => {
             <div className={style.menuItems}>
                 <ul>
                     <li>
-                        <a href="#welcome">
+                        <a href="#welcome" onClick={handleHomeClick}>
                             HOME
                         </a>
                     </li>
                     <li>
-                        <a href="#game">
+                        <a href="#game" onClick={handleGameClick}>
                             GAME
                         </a>
                     </li>

@@ -24,6 +24,7 @@
 .container h1 {
     font-size: 65px;
     color: #e2e2e2;
+    line-height: 150px;
 }
 .container button {
     font-size: 25px;
