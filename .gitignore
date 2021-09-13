@@ -2,6 +2,7 @@
 
 # dev environment
 /.vscode
+.eslintcache
 
 # dependencies
 /node_modules
