@@ -1,6 +1,10 @@
 import style from "./style.module.css";
 
-const Header = ({ title, descr }) => {
+const Header = ({ title, descr, onClickButton }) => {
+
+    const handleClick = () => {
+        onClickButton && onClickButton();
+    }
 
     return (
         <header className={style.root}>
@@ -8,6 +12,11 @@ const Header = ({ title, descr }) => {
             <div className={style.container}>
                 {title && (<h1>{title}</h1>)}
                 {descr && (<p>{descr}</p>)}
+
+                <div onClick={handleClick}>
+                    <button className="splashButton">Launch game</button>
+                </div>
+
             </div>
         </header>
     );
