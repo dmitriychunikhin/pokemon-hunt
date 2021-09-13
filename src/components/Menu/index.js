@@ -2,14 +2,9 @@ import cn from "classnames";
 import style from "./style.module.css";
 const Menu = ({ isActive, onSetPage }) => {
 
-    const handleHomeClick = (evt) => {
+    const handleClick = (evt, page) => {
         evt.preventDefault();
-        onSetPage && onSetPage("home");
-    }
-
-    const handleGameClick = (evt) => {
-        evt.preventDefault();
-        onSetPage && onSetPage("game");
+        onSetPage && onSetPage(page);
     }
 
     return (
@@ -18,12 +13,12 @@ const Menu = ({ isActive, onSetPage }) => {
             <div className={style.menuItems}>
                 <ul>
                     <li>
-                        <a href="#welcome" onClick={handleHomeClick}>
+                        <a href="#welcome" onClick={(evt) => { handleClick(evt, "home") }}>
                             HOME
                         </a>
                     </li>
                     <li>
-                        <a href="#game" onClick={handleGameClick}>
+                        <a href="#game" onClick={(evt) => { handleClick(evt, "game") }}>
                             GAME
                         </a>
                     </li>
