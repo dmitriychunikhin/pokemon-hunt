@@ -1,21 +1,17 @@
-import style from "./style.module.css";
 
 import MenuHeader from "../../components/MenuHeader";
 import Header from "../../components/Header";
 import Layout from "../../components/Layout";
 import Footer from "../../components/Footer";
-import PockemonCard from "../../components/PokemonCard";
 
 import LayoutBg3 from "../../assets/bg1.jpg";
-
-import pokemonList from "../../assets/Pokemons.json";
 
 
 const HomePage = ({ onSetPage }) => {
 
   return (
     <>
-      
+
       <MenuHeader onSetPage={onSetPage} />
 
       <Header
@@ -33,29 +29,6 @@ const HomePage = ({ onSetPage }) => {
         <p>Click on the card until the pokemon begs you for mercy</p>
       </Layout>
 
-      <Layout
-        id="cards"
-        colorTitle="#fafafa"
-        colorBg="#252934"
-        title="Start gaming now!"
-      >
-        <div className={style.flex}>
-
-          {
-            pokemonList.map(item =>
-              <PockemonCard
-                key={item.id}
-                id={item.id}
-                name={item.name}
-                type={item.type}
-                img={item.img}
-                values={item.values}
-              />
-            )
-          }
-
-        </div>
-      </Layout>
 
       <Layout
         id="about"
