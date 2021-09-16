@@ -85,7 +85,7 @@ div.menuButton {
 }
 
 @media only screen and (max-width: 849px) {
-  #navbar {
+  .root.bgActive {
     background: #181d23aa;
   }
 }

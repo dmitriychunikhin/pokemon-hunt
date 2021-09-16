@@ -1,37 +1,43 @@
-import cn from "classnames";
+import { Link } from "react-router-dom";
 import style from "./style.module.css";
-const Menu = ({ isActive, onSetPage }) => {
+import cn from "classnames";
 
-    const handleClick = (evt, page) => {
-        evt.preventDefault();
-        onSetPage && onSetPage(page);
+const MENU = [
+    {
+        title: "HOME",
+        to: "/"
+    },
+    {
+        title: "GAME",
+        to: "/game"
+    },
+    {
+        title: "ABOUT",
+        to: "/about"
+    },
+    {
+        title: "CONTACT",
+        to: "/contact"
     }
+];
+
+
+const Menu = ({ isOpen, onPageChange }) => {
 
     return (
-        <div className={cn(style.menuContainer, {[style.active]: isActive===true, [style.deactive]: isActive===false})}>
+        <div className={cn(style.menuContainer, { [style.active]: isOpen === true, [style.deactive]: isOpen === false })}>
             <div className={style.overlay} />
             <div className={style.menuItems}>
                 <ul>
-                    <li>
-                        <a href="#welcome" onClick={(evt) => { handleClick(evt, "home") }}>
-                            HOME
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#game" onClick={(evt) => { handleClick(evt, "game") }}>
-                            GAME
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#about">
-                            ABOUT
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#contact">
-                            CONTACT
-                        </a>
-                    </li>
+                    {
+                        MENU.map(({ title, to }, index) => (
+                            <li key={index}>
+                                <Link to={to} onClick={onPageChange}>
+                                    {title}
+                                </Link>
+                            </li>
+                        ))
+                    }
                 </ul>
             </div>
         </div>

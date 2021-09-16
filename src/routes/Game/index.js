@@ -1,18 +1,23 @@
+import { useState } from "react";
+
 import style from "./style.module.css";
 
-import MenuHeader from "../../components/MenuHeader";
 import Layout from "../../components/Layout";
-import Footer from "../../components/Footer";
-import PockemonCard from "../../components/PokemonCard";
+import PokemonCard from "../../components/PokemonCard";
 
-import pokemonList from "../../assets/Pokemons.json";
+import POKEMONS from "../../assets/Pokemons.json";
 
 
-const GamePage = ({ onSetPage }) => {
+const GamePage = () => {
+
+    const [pokemons, setPokemons] = useState(() => POKEMONS.slice(0,5));
+
+    const handlePokemonCardClick = (id) => {
+        setPokemons(pokemons.map(item => item.id === id ? {...item, active: !item.active } : item));
+    }
 
     return (
         <>
-            <MenuHeader onSetPage={onSetPage} />
 
             <Layout
                 id="cards"
@@ -23,22 +28,22 @@ const GamePage = ({ onSetPage }) => {
                 <div className={style.flex}>
 
                     {
-                        pokemonList.map(item =>
-                            <PockemonCard
+                        pokemons.map(item =>
+                            <PokemonCard
                                 key={item.id}
                                 id={item.id}
                                 name={item.name}
                                 type={item.type}
                                 img={item.img}
                                 values={item.values}
+                                isActive={item.active}
+                                onClick={handlePokemonCardClick}
                             />
                         )
                     }
 
                 </div>
             </Layout>
-
-            <Footer />
 
         </>
     );
