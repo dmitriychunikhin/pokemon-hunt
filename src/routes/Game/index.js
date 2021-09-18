@@ -13,15 +13,14 @@ const dbPokemonsPath = "pokemons";
 
 const GamePage = () => {
 
-    const [pokemons, setPokemons] = useState({});
-    
-    const desk = { pokemonCount: 0 };
+    const [pokemons, setPokemons] = useState({});    
+    const [desk, setDesk] = useState({ pokemonCount: 0 });
 
     const loadPokemons = () => {
         db.ref("pokemons").once("value",
             (snapshot) => {
                 const data = snapshot.val();
-                desk.pokemonCount = data ? Object.keys(data).length : 0;
+                setDesk(prev => ({ ...prev, pokemonCount: Object.keys(data || {}).length }));
                 setPokemons(data || {});
             },
             (err) => { console.error(err) });
@@ -73,9 +72,7 @@ const GamePage = () => {
     }
 
 
-    useEffect(() => {
-        loadPokemons();
-    }, []);
+    useEffect(loadPokemons, []);
 
     return (
         <>
