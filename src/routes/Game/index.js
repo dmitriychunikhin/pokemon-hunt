@@ -49,9 +49,9 @@ const GamePage = () => {
     const handleAddPokemon = () => {
 
         if (!POKEMONS_DEFAULT_DB) return;
-        const pokemonSpecies = Object.entries(POKEMONS_DEFAULT_DB.pokemons || {});
+        const pokemonSpecies = Object.values(POKEMONS_DEFAULT_DB.pokemons || {});
         if (pokemonSpecies.length === 0) return;
-        const pokemon = (pokemonSpecies[Math.floor(Math.random() * pokemonSpecies.length)])[1];
+        const pokemon = pokemonSpecies[Math.floor(Math.random() * pokemonSpecies.length)];
 
         const key = db.ref().child(dbPokemonsPath).push().key;
 
