@@ -38,7 +38,7 @@ const StartPage = () => {
 
     const handlePokemonCardClick = (uid) => {
 
-        if (Object.keys(gameState.pokemons).length >= 5) return;
+        if (!pokemons[uid].selected && Object.keys(gameState.pokemons).length >= 5) return;
 
         gameState.onSelectPokemon(uid, pokemons[uid]);
 
