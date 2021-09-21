@@ -1,0 +1,23 @@
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.toolbar {
+    display: flex;
+    padding: 0rem 0rem 3rem;
+    justify-content: center;
+}
+
+.toolbar .wrap {
+    margin: 0 0.5rem;
+}
+
+.pokemonCard {
+    width: 268px;
+    height: 388px;
+    margin: 16px;
+    perspective: 1000px;
+}
