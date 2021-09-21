@@ -33,7 +33,7 @@ const StartPage = () => {
         });
 
         return () => { pokeDb.offPokemonSocket() };
-    }, []);
+    }, [pokeDb, gameState]);
 
 
     const handlePokemonCardClick = (uid) => {
@@ -79,7 +79,7 @@ const StartPage = () => {
                     )}
                     {!isPokeSelected && (
                         <div className={style.wrap}>
-                            <h1>Select one or more pokemons to start game</h1>
+                            <h1>Select up to 5 pokemons to start game</h1>
                         </div>
                     )}
                 </div>
