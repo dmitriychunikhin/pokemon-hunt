@@ -1,4 +1,4 @@
-import Layout from "../../components/Layout";
+import Layout from "components/Layout";
 import { useHistory } from "react-router-dom";
 
 const NotFoundPage = () => {

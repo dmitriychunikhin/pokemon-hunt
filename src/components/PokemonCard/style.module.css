@@ -19,13 +19,14 @@
     height: 100%;
     position: relative;
     transform-style: preserve-3d;
-    transition: .6s .1s;
+    /*transition: .6s .1s;*/
     transform: rotateY(180deg);
 }
 
 
 .pokemonCard.active {
-    animation: flipFront 1000ms 300ms forwards;
+    /*animation: flipFront 1000ms 300ms forwards;*/
+    transform: rotateY(0deg);
 }
 
 @keyframes flipFront {
@@ -40,6 +41,8 @@
 .pokemonCard.selected {
     margin-top: -20px;
 }
+
+
 
 .cardFront,
 .cardBack {
@@ -230,4 +233,12 @@
     left: 50%;
     transform: translate(-50%, 0);
     bottom: 0;
+}
+
+.possession--blue {
+    background: #7777dd; 
+}
+
+.possession--red {
+    background: #dd7777;
 }

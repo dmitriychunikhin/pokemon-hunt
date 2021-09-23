@@ -31,7 +31,7 @@ class PokeDb {
     return await this.db.ref(dbPokemonsPath).once("value").then((snapshot) => snapshot.val());
   }
 
-  getPokemonSocket = (onLoad) => {
+  onPokemonSocket = (onLoad) => {
     this.db.ref(dbPokemonsPath).on("value", (snapshot) => { onLoad(snapshot.val()) });
   }
 

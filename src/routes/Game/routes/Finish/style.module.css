@@ -1,0 +1,54 @@
+.root {
+    margin: 0;
+}
+
+
+.cardDeck {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2vh;
+}
+
+.card {
+    margin-left: 1vw;
+    min-height: 30vh;
+}
+
+.card.selected {
+    margin-top: -1rem;
+}
+
+
+.card--blue {
+    min-height: 25vh;
+}
+
+.card--red:hover {
+    cursor: not-allowed;
+}
+.root.victory .card--red:hover {
+    cursor: pointer;
+}
+
+
+
+
+.header {
+    display: block;
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.header > h1 {
+    margin: 0 auto;
+}
+
+
+.betweenDecks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+
+}

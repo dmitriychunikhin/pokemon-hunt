@@ -1,13 +1,13 @@
 import { useState } from "react";
 
-import Menu from "../Menu";
-import NavBar from "../NavBar";
+import Menu from "components/Menu";
+import NavBar from "components/NavBar";
 
 const MenuHeader = ({bgActive}) => {
 
     const [isOpen, setOpen] = useState(null);
 
-    const handlePageChange = () => {
+    const handleMenuItemSelect = () => {
         setOpen(false);
     }
 
@@ -18,7 +18,7 @@ const MenuHeader = ({bgActive}) => {
     return (
         <>
             <Menu
-                onPageChange={handlePageChange}
+                onItemSelect={handleMenuItemSelect}
                 isOpen={isOpen}
             />
 

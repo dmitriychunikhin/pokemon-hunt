@@ -22,7 +22,7 @@ const MENU = [
 ];
 
 
-const Menu = ({ isOpen, onPageChange }) => {
+const Menu = ({ isOpen, onItemSelect }) => {
 
     return (
         <div className={cn(style.menuContainer, { [style.active]: isOpen === true, [style.deactive]: isOpen === false })}>
@@ -32,7 +32,7 @@ const Menu = ({ isOpen, onPageChange }) => {
                     {
                         MENU.map(({ title, to }, index) => (
                             <li key={index}>
-                                <Link to={to} onClick={onPageChange}>
+                                <Link to={to} onClick={onItemSelect}>
                                     {title}
                                 </Link>
                             </li>
