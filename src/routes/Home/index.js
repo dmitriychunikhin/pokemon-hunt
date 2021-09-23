@@ -1,6 +1,6 @@
-import Header from "../../components/Header";
-import Layout from "../../components/Layout";
-import LayoutBg1 from "../../assets/bg1.jpg";
+import Header from "components/Header";
+import Layout from "components/Layout";
+import LayoutBg1 from "assets/bg1.jpg";
 
 const HomePage = () => {
 
