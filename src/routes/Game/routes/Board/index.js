@@ -211,7 +211,7 @@ const BoardPage = () => {
     const checkIsTurnProcessing = () => {
         if (!turnProcessingState) return false;
 
-        alert(`Player "${turnProcessingState}" turn is processing...`);
+        alert(`Player "${turnProcessingState}" turn is being processed...`);
         return true;
     }
 
