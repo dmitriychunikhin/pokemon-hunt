@@ -1,4 +1,4 @@
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 
 import { useHistory } from "react-router-dom";
 
@@ -21,12 +21,12 @@ const StartPage = () => {
 
     const routeHistory = useHistory();
 
-    const [initState, setInitState] = useState(true);
+    const initState = useRef(true);
     const [pokemons, setPokemons] = useState({});
 
     useEffect(() => {
-        if (initState !== true) return;
-        setInitState(false);
+        if (initState.current !== true) return;
+        initState.current = false;
         loadPokemons();
 
         async function loadPokemons() {
