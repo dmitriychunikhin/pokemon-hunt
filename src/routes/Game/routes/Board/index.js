@@ -59,6 +59,8 @@ const BoardPage = () => {
             });
         }
 
+        let timeoutId = null;
+        
         async function initMatch() {
 
             const bs = await pokeApi.getBoard();
@@ -81,13 +83,16 @@ const BoardPage = () => {
             setPlayer2StartCards(p2);
 
             return new Promise((resolve) => {
-                setTimeout(() => {
+                timeoutId = setTimeout(() => {
                     setCurPlayer(Math.floor(Math.random() * playerOrder.length))
                     resolve && resolve();
                 }, startPlayerSelectionDelay)
             });
 
         }
+
+        return () => {clearTimeout(timeoutId);}
+
     }, [flowStep, pokeApi, playerOrder, gameState]);
 
 
@@ -107,8 +112,8 @@ const BoardPage = () => {
 
         function showResults() {
 
-            let player1Possessed = 0;
-            let player2Possessed = 0;
+            let player1Possessed = player1Cards.length;
+            let player2Possessed = player2Cards.length;
 
             boardState.forEach(item => {
                 if (!item.card) return;
@@ -134,7 +139,7 @@ const BoardPage = () => {
 
         }
 
-    }, [flowStep, boardState]);
+    }, [flowStep, boardState, player1Cards, player2Cards]);
 
 
     useEffect(() => {
@@ -142,7 +147,8 @@ const BoardPage = () => {
         setFlowStep(null);
         gameState.onSetMatchResults(matchResults);
         gameState.onSetPlayer2StartCards(player2StartCards);
-        setTimeout(() => { history.replace("/game/finish") }, finishPageRedirectDelay);
+        const timeoutId = setTimeout(() => { history.replace("/game/finish") }, finishPageRedirectDelay);
+        return () => {clearTimeout(timeoutId);}
     }, [flowStep, gameState, matchResults, player2StartCards, history]);
     //////////////////////////////////////////////////////////////////////
 
