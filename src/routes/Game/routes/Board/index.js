@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import style from './style.module.css';
 
 import PokemonCard from 'components/PokemonCard';
@@ -45,22 +45,22 @@ const BoardPage = () => {
     //////////////////////////////////////////////////////////////////////
     //Game match flow
     //////////////////////////////////////////////////////////////////////
-    const [flowStep, setFlowStep] = useState(null);
+    const flowStep = useRef(null);
 
-    useEffect(() => { setFlowStep("init") }, []);
+    useEffect(() => { flowStep.current = "init" }, []);
 
     useEffect(() => {
         //Initalization of the match
 
-        if (flowStep === "init") {
-            setFlowStep("initPending");
-            initMatch().then(() => {
-                setFlowStep("play");
+        if (flowStep.current === "init") {
+            flowStep.current = "initPending";
+            initMatch().then((tid) => {
+                flowStep.current = "play";
             });
         }
 
         let timeoutId = null;
-        
+
         async function initMatch() {
 
             const bs = await pokeApi.getBoard();
@@ -82,74 +82,69 @@ const BoardPage = () => {
 
             setPlayer2StartCards(p2);
 
-            return new Promise((resolve) => {
-                timeoutId = setTimeout(() => {
-                    setCurPlayer(Math.floor(Math.random() * playerOrder.length))
-                    resolve && resolve();
-                }, startPlayerSelectionDelay)
-            });
+            timeoutId = setTimeout(() => {
+                clearTimeout(timeoutId);
+                setCurPlayer(Math.floor(Math.random() * playerOrder.length));
+            }, startPlayerSelectionDelay);
 
         }
 
-        return () => {clearTimeout(timeoutId);}
+        return () => { clearTimeout(timeoutId); }
 
-    }, [flowStep, pokeApi, playerOrder, gameState]);
+    }, [pokeApi, playerOrder, gameState]);
 
 
     useEffect(() => {
+
+        if (flowStep.current !== "play") return;
+
         //End game conditions
         if (turnCount !== maxTurnCount) return;
-        setFlowStep("results");
-    }, [turnCount]);
+
+        flowStep.current = "finish";
+
+        let player1Possessed = player1Cards.length;
+        let player2Possessed = player2Cards.length;
+
+        boardState.forEach(item => {
+            if (!item.card) return;
+            if (item.card.possession === player1ID) player1Possessed++;
+            if (item.card.possession === player2ID) player2Possessed++;
+        });
+
+        let resType = null;
+
+        if (player1Possessed > player2Possessed) {
+            resType = "win";
+        }
+        else if (player1Possessed < player2Possessed) {
+            resType = "lose";
+        }
+        else {
+            resType = "draw";
+        }
+
+        setMatchResults(prev => ({ ...prev, type: resType }));
+        setCurPlayer(null);
+
+
+    }, [turnCount, boardState, player1Cards, player2Cards ]);
 
 
     useEffect(() => {
-        if (flowStep === "results") {
-            setFlowStep("resultsPending");
-            showResults();
-            setFlowStep("finish");
-        }
 
-        function showResults() {
+        if (flowStep.current !== "finish") return;
+        flowStep.current = null;
 
-            let player1Possessed = player1Cards.length;
-            let player2Possessed = player2Cards.length;
+        const timeoutId = setTimeout(() => {
+            gameState.onSetMatchResults(matchResults);
+            gameState.onSetPlayer2StartCards(player2StartCards);
+            history.replace("/game/finish");
+        }, finishPageRedirectDelay);
 
-            boardState.forEach(item => {
-                if (!item.card) return;
-                if (item.card.possession === player1ID) player1Possessed++;
-                if (item.card.possession === player2ID) player2Possessed++;
-            });
+        return () => { clearTimeout(timeoutId); }
 
-            let resType = null;
-
-            if (player1Possessed > player2Possessed) {
-                resType = "win";
-            }
-            else if (player1Possessed < player2Possessed) {
-                resType = "lose";
-            }
-            else {
-                resType = "draw";
-            }
-
-
-            setMatchResults(prev => ({ ...prev, type: resType }));
-            setCurPlayer(null);
-
-        }
-
-    }, [flowStep, boardState, player1Cards, player2Cards]);
-
-
-    useEffect(() => {
-        if (flowStep !== "finish") return;
-        setFlowStep(null);
-        gameState.onSetMatchResults(matchResults);
-        gameState.onSetPlayer2StartCards(player2StartCards);
-        const timeoutId = setTimeout(() => { history.replace("/game/finish") }, finishPageRedirectDelay);
-        return () => {clearTimeout(timeoutId);}
-    }, [flowStep, gameState, matchResults, player2StartCards, history]);
+    }, [matchResults, gameState, player2StartCards, history])
     //////////////////////////////////////////////////////////////////////
 
 
