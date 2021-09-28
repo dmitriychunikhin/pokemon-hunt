@@ -1,49 +1,60 @@
-import { useEffect, useState, useContext, useRef } from "react";
-
+import { useEffect, useState, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 import style from "./style.module.css";
 
 import Layout from "components/Layout";
 import PokemonCard from "components/PokemonCard";
+import Loader from "components/Loader";
 
-import { PokeDbContext } from "context/PokeDbContext"
-import { GameContext } from "context/GameContext"
-
+import * as gameStore from "store/game";
 
 const StartPage = () => {
 
-    const pokeDb = useContext(PokeDbContext);
-    const gameState = useContext(GameContext);
+    const dispatch = useDispatch();
+    const player1Deck = useSelector(gameStore.player1DeckGet);
+    const player1Start = useSelector(gameStore.player1StartGet);
 
     const nReadyToStart = 5;
-    const isReadyToStart = (Object.keys(gameState.player1StartCards).length >= nReadyToStart);
+    const isReadyToStart = (Object.keys(player1Start || {}).length >= nReadyToStart);
 
     const routeHistory = useHistory();
 
-    const initState = useRef(true);
     const [pokemons, setPokemons] = useState({});
 
-    useEffect(() => {
-        if (initState.current !== true) return;
-        initState.current = false;
-        loadPokemons();
+    const initState = useRef("init");
 
-        async function loadPokemons() {
-            gameState.onSetPlayer1StartCards({});
-            const data = await pokeDb.getPokemonOnce();
-            setPokemons(data || {});
+    useEffect(() => {
+
+        if (initState.current === "init") {
+            initState.current = "initPending";
+
+            dispatch(gameStore.player1StartClean());
+            dispatch(gameStore.player1DeckFetch());
+
+            return;
         }
 
+        if (initState.current !== "initPending") return;
 
-    }, [initState, pokeDb, gameState]);
+        if (player1Deck.loading === "pending") return;
+
+        initState.current = "initResolved";
+
+        if (!player1Deck.data) return;
+        setPokemons(player1Deck.data);
+
+    }, [player1Deck, dispatch])
+
+
 
 
     const handlePokemonCardClick = (uid) => {
 
-        if (!pokemons[uid].selected && isReadyToStart) return;
+        if (!pokemons[uid]?.selected && isReadyToStart) return;
 
-        gameState.onSelectPlayer1StartCard(uid, pokemons[uid]);
+        dispatch(gameStore.player1StartAdd({ uid, card: pokemons[uid] }));
 
         setPokemons(prev => {
             const pok = { ...(prev[uid]) };
@@ -85,7 +96,11 @@ const StartPage = () => {
                     )}
                 </div>
 
+
                 <div className={style.flex}>
+
+                    {player1Deck.loading === "pending" && <Loader />}
+
                     {
                         Object.entries(pokemons).map(([uid, item]) =>
                             <div className={style.pokemonCard} key={uid}>

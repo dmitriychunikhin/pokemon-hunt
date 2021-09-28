@@ -60,6 +60,24 @@
     align-items: center;
 }
 
+.pokemonCard.blinking {
+    transition: .6s .1s;
+    transform: rotateY(0deg);
+    animation: blink 0.5s 0s linear infinite alternate;
+}
+
+@keyframes blink {
+    from {
+        transform: rotateY(0deg); 
+    }
+
+    to {
+        transform: rotateY(180deg);
+    }
+    
+}
+
+
 .cardFront {
     transform: rotateY(0deg);
     z-index: 2;
@@ -93,10 +111,6 @@
 
 .wrap.back {
     z-index: -1;
-    background-image: url(./assets/card-back-side.jpg);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;    
 }
 
 .cardBack {
@@ -105,8 +119,8 @@
 }
 
 .cardBack img {
+    width: 100%;
     height: 100%;
-    border-radius: 24px;
 }
 
 .pokemon {

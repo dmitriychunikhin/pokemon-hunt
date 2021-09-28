@@ -11,24 +11,15 @@ import AboutPage from "./routes/About";
 import ContactPage from "./routes/Contact";
 import NotFoundPage from "./routes/NotFound";
 
-import PokeDb from "services/PokeDb"
-import PokeApi from "services/PokeApi";
-import { PokeDbContext } from "context/PokeDbContext"
-import { PokeApiContext } from "context/PokeApiContext"
 
 
 const App = () => {
-
-  const pokeDb = new PokeDb();
-  const pokeApi = new PokeApi();
 
   const location = useLocation();
   const isBgActive = (location.pathname === "/" || location.pathname === "/game/board");
 
 
   return (
-    <PokeDbContext.Provider value={pokeDb}>
-      <PokeApiContext.Provider value={pokeApi}>
         <Switch>
           <Route path="/notfound" component={NotFoundPage} />
           <Route>
@@ -48,8 +39,6 @@ const App = () => {
             </>
           </Route>
         </Switch>
-      </PokeApiContext.Provider>
-    </PokeDbContext.Provider>
 
   );
 

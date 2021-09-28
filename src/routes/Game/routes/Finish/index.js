@@ -1,33 +1,32 @@
-import { useContext, useState } from 'react';
-import { GameContext } from 'context/GameContext';
-import { PokeDbContext } from 'context/PokeDbContext';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import cn from "classnames";
 import s from "./style.module.css";
 import PokemonCard from 'components/PokemonCard';
 
+import * as gameStore from "store/game";
+import pokeDb from 'services/PokeDb';
+
 const FinishPage = () => {
     const history = useHistory();
-    const gameState = useContext(GameContext);
-    const pokeDb = useContext(PokeDbContext);
-    const isVictory = gameState.matchResults.type === "win";
-    const isLoss = gameState.matchResults.type === "lose";
-    const isDraw = gameState.matchResults.type === "draw";
+    const matchResults = useSelector(gameStore.matchResultsGet);
+    const player1Start = useSelector(gameStore.player1StartGet);
+    const player2Start = useSelector(gameStore.player2StartGet);
+    const isVictory = matchResults.type === "win";
+    const isLoss = matchResults.type === "lose";
+    const isDraw = matchResults.type === "draw";
 
     //Exit condition
-    if (!gameState.matchResults || !gameState.matchResults.type) {
+    if (!matchResults?.type) {
         history.replace("/game");
     }
-
 
     const [cardSelected, setCardSelected] = useState(null);
 
     const handleCardClick = (card) => {
-        if (!isVictory) {
-            setCardSelected(null)
-            return;
-        }
+        if (!isVictory) return; 
         setCardSelected(card);
     }
 
@@ -38,13 +37,10 @@ const FinishPage = () => {
         }
 
         if (!cardSelected) return;
-        
-        gameState.onSetMatchResults({});
-        gameState.onSetPlayer2StartCards([]);
 
         pokeDb.addPokemon(cardSelected);
         history.replace("/game");
-        
+
     }
 
 
@@ -82,7 +78,7 @@ const FinishPage = () => {
             </div>
             <div className={s.cardDeck} >
                 {
-                    Object.values(gameState.player1StartCards).map((item, index) =>
+                    Object.values(player1Start ?? {}).map((item, index) =>
                         <PokemonCard
                             key={index}
                             id={item.id}
@@ -109,7 +105,7 @@ const FinishPage = () => {
 
             <div className={s.cardDeck} >
                 {
-                    Object.values(gameState.player2StartCards).map((item, index) =>
+                    (player2Start.data || []).map((item, index) =>
                         <PokemonCard
                             onClick={() => { handleCardClick(item) }}
                             key={index}
