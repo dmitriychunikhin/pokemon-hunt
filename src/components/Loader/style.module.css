@@ -1,0 +1,23 @@
+.root {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.loader {
+  border: 0.5rem solid #f3f3f3; 
+  border-top: 0.5rem solid #3498db; 
+  border-radius: 49%;
+  animation: spin 1s 1s linear infinite;
+  width: 2rem;
+  height: 2rem;
+  visibility: hidden;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); visibility: visible; }
+  100% { transform: rotate(360deg); visibility: visible; }
+}

@@ -67,6 +67,6 @@ class PokeDb {
   }
 }
 
-
-export default PokeDb;
+const pokeDb = new PokeDb();
+export default pokeDb; 
 
