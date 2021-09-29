@@ -3,7 +3,7 @@ import { useState } from "react";
 import Menu from "components/Menu";
 import NavBar from "components/NavBar";
 
-const MenuHeader = ({bgActive}) => {
+const MenuHeader = ({bgActive, statusMsg}) => {
 
     const [isOpen, setOpen] = useState(null);
 
@@ -26,6 +26,7 @@ const MenuHeader = ({bgActive}) => {
                 onHamburgerClick={handleHamburgerClick}
                 isActive={isOpen}
                 bgActive={bgActive}
+                statusMsg={statusMsg}
             />
         </>
     );

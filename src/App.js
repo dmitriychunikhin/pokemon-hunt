@@ -1,5 +1,5 @@
 import { Switch, Route, Redirect, useLocation } from "react-router-dom";
-
+import { useSelector } from "react-redux";
 import style from "./App.module.css";
 import cn from "classnames";
 
@@ -11,20 +11,22 @@ import AboutPage from "./routes/About";
 import ContactPage from "./routes/Contact";
 import NotFoundPage from "./routes/NotFound";
 
-
+import * as appStore from "store/app";
 
 const App = () => {
 
+  const navBarStatusMsgText = useSelector((state) => appStore.selectNavBarStatusMsgText(state));
+
   const location = useLocation();
   const isBgActive = (location.pathname === "/" || location.pathname === "/game/board");
-
+  
 
   return (
         <Switch>
           <Route path="/notfound" component={NotFoundPage} />
           <Route>
             <>
-              <MenuHeader bgActive={!isBgActive} />
+              <MenuHeader bgActive={!isBgActive} statusMsg={navBarStatusMsgText} />
 
               <div className={cn(style.wrap, { [style.isHomePage]: isBgActive })}>
                 <Switch>

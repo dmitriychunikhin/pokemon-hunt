@@ -9,6 +9,7 @@ import PokemonCard from "components/PokemonCard";
 import Loader from "components/Loader";
 
 import * as gameStore from "store/game";
+import * as appStore from "store/app";
 
 const StartPage = () => {
 
@@ -71,8 +72,15 @@ const StartPage = () => {
 
     const handleStartGame = () => {
         routeHistory.push(`/game/board`);
+
     }
 
+    useEffect(() => {
+        dispatch(appStore.setNavBarStatusMsg({ 
+            exact:true,
+            text: `Selected ${Object.keys(player1Start || {}).length} cards out of ${nReadyToStart}` 
+        }));
+    }, [player1Start, dispatch])
 
 
     return (
