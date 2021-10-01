@@ -2,6 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const slice = createSlice({
     name: "app",
     initialState: {
+        authData: {
+            idToken: null
+        },
         navBarStatusMsg: [
             {
                 //message template (example for root page)
@@ -12,6 +15,10 @@ const slice = createSlice({
             }]
     },
     reducers: {
+        setAuthIdToken: (state, { payload: { idToken } }) => {
+            localStorage.setItem("idToken", idToken);
+            return { ...state, authData: { ...state.authData, idToken } };
+        },
         setNavBarStatusMsg: (state, { payload: { exact, text } }) => {
             const path = document.location.pathname;
             return {
@@ -25,6 +32,9 @@ const slice = createSlice({
     }
 
 });
+
+export const selectIsLoggedIn = state => (state.app.authData?.idToken || false) && true;
+export const { setAuthIdToken } = slice.actions;
 
 export const selectNavBarStatusMsgText = state => {
     const currentPath = document.location.pathname;
