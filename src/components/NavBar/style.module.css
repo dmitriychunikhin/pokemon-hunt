@@ -20,7 +20,6 @@
   padding: 0 2rem;
 }
 
-
 .root .brand {
   font-size: 1.6rem;
   color: #fafafa;
@@ -48,7 +47,7 @@ div.menuButton {
 .menuButton span::before,
 .menuButton span::after {
   position: absolute;
-  content: '';
+  content: "";
   width: 30px;
   height: 3px;
   background: #fafafa;
@@ -59,7 +58,7 @@ div.menuButton {
   position: relative;
   display: block;
   top: 50%;
-  transform: translate(0,-50%);
+  transform: translate(0, -50%);
 }
 
 .menuButton span::before {
@@ -76,16 +75,16 @@ div.menuButton {
   background: #f300b4;
 }
 
-.menuButton.active > span  {
+.menuButton.active > span {
   background: transparent;
 }
 
-.menuButton.active > span::before  {
+.menuButton.active > span::before {
   transform: rotate(-225deg);
   top: 0px;
 }
 
-.menuButton.active > span::after  {
+.menuButton.active > span::after {
   transform: rotate(225deg);
   top: 0px;
 }
@@ -96,3 +95,21 @@ div.menuButton {
   }
 }
 
+.loginAndHamburger {
+  display: flex;
+}
+
+.loginButton {
+  margin-right: 20px;
+  width: 22px;
+  height: 22px;
+}
+
+.loginButton g {
+  fill: #fafafa;
+  transition: 0.5s ease-in-out; 
+}
+
+.loginButton:hover g {
+  fill: #f300b4;
+}
