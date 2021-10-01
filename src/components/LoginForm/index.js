@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "components/Input";
 import s from "./style.module.css"
 
 
-const LoginForm = ({ onSubmit }) => {
+const LoginForm = ({ onSubmit, isReset }) => {
 
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
@@ -11,21 +11,22 @@ const LoginForm = ({ onSubmit }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!onSubmit) return;
-        const res = await onSubmit({ email, password, isSignUp });
-        if (res === true) {
-            setEmail('');
-            setPassword('');
-        }
+        onSubmit && onSubmit({ email, password, isSignUp });
     }
+
+    useEffect(() => {
+        if (!isReset) return;
+        setEmail('');
+        setPassword('');
+    }, [isReset])
 
     return (
         <form onSubmit={handleSubmit}>
             <Input label="Email" type="email" required value={email ?? ""} onChange={(value) => { setEmail(value) }} />
             <Input label="Password" type="password" required value={password ?? ""} onChange={(value) => { setPassword(value) }} />
             <div className={s.actionWrap}>
-            <button>{isSignUp ? "Register" : "Login"}</button>
-            <div className={s.actionMode} onClick={()=>{setIsSignUp(prev=>!prev)}}>{isSignUp ? "?login" : "?register"}</div>
+                <button>{isSignUp ? "Register" : "Login"}</button>
+                <div className={s.actionMode} onClick={() => { setIsSignUp(prev => !prev) }}>{isSignUp ? "?login" : "?register"}</div>
             </div>
         </form>
     );

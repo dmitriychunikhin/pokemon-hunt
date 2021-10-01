@@ -40,7 +40,6 @@ const MenuHeader = ({ bgActive, statusMsg }) => {
             setIsLoginForm(false);
             setIsLoggedIn(true);
             NotificationManager.success("Successful login", 'Auth');
-            return true;
         }
 
         if (isSignUp) {
@@ -59,7 +58,7 @@ const MenuHeader = ({ bgActive, statusMsg }) => {
             if (resSignUp.error) {
                 if (resSignUp?.error?.message) { NotificationManager.error(resSignUp.error.message, 'Auth'); }
             } else {
-                return login(resSignUp.idToken);
+                login(resSignUp.idToken);
             }
 
         } else {
@@ -79,13 +78,13 @@ const MenuHeader = ({ bgActive, statusMsg }) => {
             if (resSignIn.error) {
                 if (resSignIn?.error?.message) { NotificationManager.error(resSignIn.error.message, 'Auth'); }
             } else {
-                return login(resSignIn.idToken);
+                login(resSignIn.idToken);
             }
 
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         localStorage.removeItem("idToken");
     }, [])
 
@@ -107,7 +106,7 @@ const MenuHeader = ({ bgActive, statusMsg }) => {
             />
 
             <Modal title="Enter your credentials" isOpen={isLoginForm} onClose={() => { setIsLoginForm(false) }}>
-                <LoginForm onSubmit={handleSubmit} />
+                <LoginForm onSubmit={handleSubmit} isReset={!isLoginForm || isLoggedIn} />
             </Modal>
         </>
     );
