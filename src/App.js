@@ -1,5 +1,7 @@
 import { Switch, Route, Redirect, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+
+import 'react-notifications/lib/notifications.css';
 import style from "./App.module.css";
 import cn from "classnames";
 
@@ -12,10 +14,10 @@ import ContactPage from "./routes/Contact";
 import NotFoundPage from "./routes/NotFound";
 
 import PrivateRoute from "components/PrivateRoute";
-import 'react-notifications/lib/notifications.css';
 import { NotificationContainer } from "react-notifications";
 
 import * as appStore from "store/app";
+
 
 const App = () => {
 
@@ -37,7 +39,7 @@ const App = () => {
               <Switch>
                 <Route path="/" exact component={HomePage} />
                 <PrivateRoute path="/game" component={GamePage} />
-                <Route path="/about" component={AboutPage} />
+                <PrivateRoute path="/about" component={AboutPage} />
                 <Route path="/contact" component={ContactPage} />
                 <Route render={() => (<Redirect to="/notfound" />)} />
               </Switch>
