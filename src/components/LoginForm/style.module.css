@@ -1,0 +1,15 @@
+.actionWrap {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  grid-gap: 20px;
+  justify-items: stretch;
+}
+
+.actionWrap .actionMode {
+  position: absolute;
+  justify-self: end;
+  bottom: 20px;
+  font-size: 20pt;
+  text-decoration: underline;
+  cursor: pointer;
+}

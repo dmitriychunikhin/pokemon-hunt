@@ -24,65 +24,70 @@ const MenuHeader = ({ bgActive, statusMsg }) => {
         setOpen(!isOpen);
     }
 
-    const [isLogin, setIsLogin] = useState(false);
+    const [isLoginForm, setIsLoginForm] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleLoginClick = () => {
-        setIsLogin(true);
+        setIsLoginForm(true);
     }
 
 
 
-    const handleSubmit = async ({ email, password }) => {
-        const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email,
-                password,
-                returnSecureToken: true
-            }),
-        });
-        
-        const request = await res.json();
-        if (request.error) {
-            if (request.error.message === "EMAIL_EXISTS") {
-                const res = await (await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email,
-                        password,
-                        returnSecureToken: true
-                    }),
-                })).json();
-                
-                if (!res.error && res.idToken) {
-                    localStorage.setItem("idToken", res.idToken);
-                    setIsLogin(false);
-                    NotificationManager.error("Successful login", 'Auth');
-                }
-                else {
-                    if (request?.error?.message) NotificationManager.error(request.error.message, 'Auth');
-                }
-                
+    const handleSubmit = async ({ email, password, isSignUp }) => {
+
+        const login = (idToken) => {
+            localStorage.setItem("idToken", idToken);
+            setIsLoginForm(false);
+            setIsLoggedIn(true);
+            NotificationManager.success("Successful login", 'Auth');
+            return true;
+        }
+
+        if (isSignUp) {
+            const resSignUp = await (await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    returnSecureToken: true
+                }),
+            })).json();
+
+            if (resSignUp.error) {
+                if (resSignUp?.error?.message) { NotificationManager.error(resSignUp.error.message, 'Auth'); }
+            } else {
+                return login(resSignUp.idToken);
             }
-            else {
-                if (request?.error?.message) NotificationManager.error(request.error.message, 'Auth');
-            }
+
         } else {
-            localStorage.setItem("idToken", request.idToken);
-            setIsLogin(false);
-            NotificationManager.error("Successful login", 'Auth');
+
+            const resSignIn = await (await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                    returnSecureToken: true
+                }),
+            })).json();
+
+            if (resSignIn.error) {
+                if (resSignIn?.error?.message) { NotificationManager.error(resSignIn.error.message, 'Auth'); }
+            } else {
+                return login(resSignIn.idToken);
+            }
+
         }
     }
 
-    useEffect(() => {
-        localStorage.setItem("idToken", "");
-    }, []);
+    useEffect(()=>{
+        localStorage.removeItem("idToken");
+    }, [])
 
 
     return (
@@ -95,12 +100,13 @@ const MenuHeader = ({ bgActive, statusMsg }) => {
             <NavBar
                 onHamburgerClick={handleHamburgerClick}
                 onLoginClick={handleLoginClick}
+                isLoggedIn={isLoggedIn}
                 isActive={isOpen}
                 bgActive={bgActive}
                 statusMsg={statusMsg}
             />
 
-            <Modal open={isLogin} onClose={() => { setIsLogin(false) }}>
+            <Modal title="Enter your credentials" isOpen={isLoginForm} onClose={() => { setIsLoginForm(false) }}>
                 <LoginForm onSubmit={handleSubmit} />
             </Modal>
         </>

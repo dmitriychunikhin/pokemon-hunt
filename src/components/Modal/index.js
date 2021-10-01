@@ -2,12 +2,12 @@ import { useRef, useEffect } from "react";
 import cn from "classnames";
 import s from "./style.module.css";
 
-const Modal = ({ title, open, onClose, children }) => {
+const Modal = ({ title, isOpen, onClose, children }) => {
 
     const modalRef = useRef(null);
 
     const handleCloseOutsideClick = (e) => {
-        if (e.target.contains(modalRef.current)) {
+        if (!modalRef.current.contains(e.target)) {
             onClose && onClose();
         }
     }
@@ -17,12 +17,12 @@ const Modal = ({ title, open, onClose, children }) => {
     }
 
     useEffect(() => {
-        document.querySelector("body").style.overflow = open ? null : "hidden";
+        document.querySelector("body").style.overflow = isOpen ? "hidden" : null;
 
-    }, [open]);
+    }, [isOpen]);
 
     return (
-        <div className={cn(s.root, { [s.open]: open })} onClick={handleCloseOutsideClick}>
+        <div className={cn(s.root, { [s.open]: isOpen })} onClick={handleCloseOutsideClick}>
             <div className={s.modal} ref={modalRef}>
                 <div className={s.head}>
                     {title}

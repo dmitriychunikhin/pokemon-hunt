@@ -2,7 +2,7 @@ import cn from "classnames";
 import style from "./style.module.css";
 import { ReactComponent as LoginSVG } from "assets/Login.svg";
 
-const NavBar = ({ isActive, bgActive, onLoginClick, onHamburgerClick, statusMsg }) => {
+const NavBar = ({ isActive, bgActive, isLoggedIn, onLoginClick, onHamburgerClick, statusMsg }) => {
 
     return (
         <nav className={cn(style.root, { [style.bgActive]: bgActive })}>
@@ -13,8 +13,10 @@ const NavBar = ({ isActive, bgActive, onLoginClick, onHamburgerClick, statusMsg 
                 <div className={style.statusMsg}>{statusMsg}</div>
 
                 <div className={style.loginAndHamburger}>
-                    
-                    <LoginSVG className={style.loginButton} onClick={onLoginClick} />
+
+                    <div className={cn(style.loginButton, {[style.isLoggedIn]:isLoggedIn})}>
+                        <LoginSVG onClick={onLoginClick} />
+                    </div>
 
                     <div
                         className={cn(style.menuButton, { [style.active]: isActive })}
@@ -24,7 +26,7 @@ const NavBar = ({ isActive, bgActive, onLoginClick, onHamburgerClick, statusMsg 
                     </div>
                 </div>
             </div>
-        </nav>
+        </nav >
     );
 }
 

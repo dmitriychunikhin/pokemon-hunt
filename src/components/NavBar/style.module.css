@@ -105,9 +105,18 @@ div.menuButton {
   height: 22px;
 }
 
+.loginButton.isLoggedIn {
+  visibility: hidden;
+}
+
+.loginButton svg {
+  width: 100%;
+  height: 100%;
+}
+
 .loginButton g {
   fill: #fafafa;
-  transition: 0.5s ease-in-out; 
+  transition: 0.5s ease-in-out;
 }
 
 .loginButton:hover g {
