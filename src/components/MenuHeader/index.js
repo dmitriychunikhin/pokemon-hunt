@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NotificationManager } from "react-notifications";
+import { useDispatch, useSelector} from "react-redux";
+
+import { selectIsLoggedIn, setAuthIdToken } from "store/app";
+
 
 import Menu from "components/Menu";
 import NavBar from "components/NavBar";
@@ -8,37 +12,38 @@ import Modal from "components/Modal";
 import LoginForm from "components/LoginForm";
 
 
+
 import { firebaseConfig } from "services/PokeDb";
 const apiKey = firebaseConfig.apiKey;
 
 
 const MenuHeader = ({ bgActive, statusMsg }) => {
 
-    const [isOpen, setOpen] = useState(null);
+    const [isMenuActive, setMenuActive] = useState(null);
+    
+    const [isLoginActive, setLoginActive] = useState(false);
 
+    const dispatch = useDispatch();
+    const isLoggedIn = useSelector(selectIsLoggedIn); 
+    
     const handleMenuItemSelect = () => {
-        setOpen(false);
+        setMenuActive(false);
     }
 
     const handleHamburgerClick = () => {
-        setOpen(!isOpen);
+        setMenuActive(prev => !prev);
     }
-
-    const [isLoginForm, setIsLoginForm] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleLoginClick = () => {
-        setIsLoginForm(true);
+        setLoginActive(true);
     }
-
 
 
     const handleSubmit = async ({ email, password, isSignUp }) => {
 
         const login = (idToken) => {
-            localStorage.setItem("idToken", idToken);
-            setIsLoginForm(false);
-            setIsLoggedIn(true);
+            setLoginActive(false);
+            dispatch(setAuthIdToken({idToken}));
             NotificationManager.success("Successful login", 'Auth');
         }
 
@@ -84,29 +89,24 @@ const MenuHeader = ({ bgActive, statusMsg }) => {
         }
     }
 
-    useEffect(() => {
-        localStorage.removeItem("idToken");
-    }, [])
-
-
     return (
         <>
             <Menu
                 onItemSelect={handleMenuItemSelect}
-                isOpen={isOpen}
+                isOpen={isMenuActive}
             />
 
             <NavBar
                 onHamburgerClick={handleHamburgerClick}
                 onLoginClick={handleLoginClick}
                 isLoggedIn={isLoggedIn}
-                isActive={isOpen}
+                isActive={isMenuActive}
                 bgActive={bgActive}
                 statusMsg={statusMsg}
             />
 
-            <Modal title="Enter your credentials" isOpen={isLoginForm} onClose={() => { setIsLoginForm(false) }}>
-                <LoginForm onSubmit={handleSubmit} isReset={!isLoginForm || isLoggedIn} />
+            <Modal title="Enter your credentials" isOpen={isLoginActive} onClose={() => { setLoginActive(false) }}>
+                <LoginForm onSubmit={handleSubmit} isReset={!isLoginActive || isLoggedIn} />
             </Modal>
         </>
     );
