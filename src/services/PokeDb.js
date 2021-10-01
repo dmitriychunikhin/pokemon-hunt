@@ -6,7 +6,7 @@ import "firebase/compat/database";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: "AIzaSyCd83qPtS90EbdQFQocu2fZ2olhjMI8K_w",
   authDomain: "zaratustrah-thegame.firebaseapp.com",
   databaseURL: "https://zaratustrah-thegame-default-rtdb.europe-west1.firebasedatabase.app",
