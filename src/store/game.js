@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { remoteDataDefault, remoteDataReducer, remoteDataFetcher } from "./remoteDataTools";
-import pokeDb from "services/PokeDb";
 import pokeApi from "services/PokeApi";
 
 
@@ -25,7 +24,18 @@ export const player1DeckGet = (state) => state.game.player1Deck;
 
 export const player1DeckFetch = remoteDataFetcher(
     slice.actions.player1DeckFetch,
-    async () => pokeDb.getPokemonOnce()
+    async ({ pokeDb }) => {
+        let res = await pokeDb.getPokemonOnce();
+        if (Object.keys(res ?? {}).length === 0) {
+            const userStarterPack = await pokeApi.getNewUserStarterPack();
+
+            for (let item of userStarterPack) {
+                await pokeDb.addPokemon(item);
+            }
+            res = await pokeDb.getPokemonOnce();
+        }
+        return res;
+    }
 );
 
 export const player1StartGet = (state) => state.game.player1Start;
@@ -35,7 +45,7 @@ export const player2StartGet = (state) => state.game.player2Start;
 
 export const player2StartFetch = remoteDataFetcher(
     slice.actions.player2StartFetch,
-    async () => pokeApi.createPlayer()
+    async () => pokeApi.getPlayer2()
 );
 
 export const matchResultsGet = (state) => state.game.matchResults;

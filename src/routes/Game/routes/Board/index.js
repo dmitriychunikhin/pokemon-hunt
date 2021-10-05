@@ -75,7 +75,7 @@ const BoardPage = () => {
 
         if (flowStep.current !== "initPending") return;
 
-        if (player2Start.loading === "pending") return;
+        if (player2Start.isPending) return;
 
         if (!boardState?.length) return;
 
@@ -177,7 +177,7 @@ const BoardPage = () => {
     //////////////////////////////////////////////////////////////////////
     const [turnProcessingState, setTurnProcessingState] = useState(null);
 
-    const checkIsTurnProcessing = () => (turnProcessingState && true);
+    const checkIsTurnProcessing = () => (!!turnProcessingState);
 
     const makeTurn = async ({ position, card }) => {
 
@@ -256,7 +256,7 @@ const BoardPage = () => {
             <div className={style.board}>
                 {!boardState?.length && <Loader />}
 
-                { 
+                {
                     boardState.map(({ position, card, pending }) =>
                         <div
                             key={position}
@@ -285,7 +285,7 @@ const BoardPage = () => {
 
             <div className={style.playerTwo}>
 
-                {player2Start.loading === "pending" && <Loader />}
+                {player2Start.isPending && <Loader />}
 
                 {
                     <PlayerBoard

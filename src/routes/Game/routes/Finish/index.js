@@ -7,10 +7,12 @@ import s from "./style.module.css";
 import PokemonCard from 'components/PokemonCard';
 
 import * as gameStore from "store/game";
-import pokeDb from 'services/PokeDb';
+import { usePokeDb } from 'context/PokeDb';
+import { NotificationManager } from 'react-notifications';
 
 const FinishPage = () => {
     const history = useHistory();
+    const pokeDb = usePokeDb();
     const matchResults = useSelector(gameStore.matchResultsGet);
     const player1Start = useSelector(gameStore.player1StartGet);
     const player2Start = useSelector(gameStore.player2StartGet);
@@ -26,11 +28,11 @@ const FinishPage = () => {
     const [cardSelected, setCardSelected] = useState(null);
 
     const handleCardClick = (card) => {
-        if (!isVictory) return; 
+        if (!isVictory) return;
         setCardSelected(card);
     }
 
-    const handleEndGameClick = () => {
+    const handleEndGameClick = async () => {
         if (!isVictory) {
             history.replace("/game");
             return;
@@ -38,9 +40,12 @@ const FinishPage = () => {
 
         if (!cardSelected) return;
 
-        pokeDb.addPokemon(cardSelected);
-        history.replace("/game");
-
+        try {
+            await pokeDb.addPokemon(cardSelected);
+            history.replace("/game");
+        } catch (err) {
+            NotificationManager.error(err.message, "Error");
+        }
     }
 
 

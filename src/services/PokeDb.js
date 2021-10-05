@@ -1,7 +1,6 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
 
-
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -23,12 +22,25 @@ const dbPokemonsPath = "pokemons";
 
 class PokeDb {
 
-  constructor() {
+  constructor({ userLocalId, userIdToken }) {
     this.db = app.database();
+    this._userLocalId = userLocalId;
+    this._userIdToken = userIdToken;
   }
 
+  checkRESTApiErr(res) {
+    if (!res) return;
+    if (res.error) {
+      throw new Error(res.error);
+    }
+  }
+
+
   getPokemonOnce = async () => {
-    return await this.db.ref(dbPokemonsPath).once("value").then((snapshot) => snapshot.val());
+    //return await this.db.ref(dbPokemonsPath).once("value").then((snapshot) => snapshot.val());
+    const res = await (await fetch(`${firebaseConfig.databaseURL}/${this._userLocalId}/${dbPokemonsPath}.json?auth=${this._userIdToken}`)).json();
+    this.checkRESTApiErr(res);
+    return res;
   }
 
   onPokemonSocket = (onLoad) => {
@@ -45,28 +57,18 @@ class PokeDb {
     return data;
   }
 
-  postPokemon = async (uid, pokemon) => {
-    const data = this.prepBeforeSave(pokemon);
-    await this.db.ref(`${dbPokemonsPath}/${uid}`).set(data);
-  }
-
-  postPokemonBulk = async (pokemons) => {
-
-    const data = Object.entries(pokemons).reduce((acc, [uid, pok]) => {
-      acc[uid] = this.prepBeforeSave(pok);
-      return acc;
-    }, {});
-
-    await this.db.ref(`${dbPokemonsPath}`).set(data);
-  }
-
 
   addPokemon = async (pokemon) => {
-    const key = this.db.ref().child(dbPokemonsPath).push().key;
-    await this.db.ref(`${dbPokemonsPath}/${key}`).set(pokemon);
+    const res = await (await fetch(`${firebaseConfig.databaseURL}/${this._userLocalId}/${dbPokemonsPath}.json?auth=${this._userIdToken}`, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(pokemon)
+    })).json();
+
+    this.checkRESTApiErr(res);
+
+    return res;
   }
 }
 
-const pokeDb = new PokeDb();
-export default pokeDb; 
-
+export default PokeDb;

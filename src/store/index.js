@@ -1,11 +1,13 @@
 import {configureStore} from "@reduxjs/toolkit";
 import gameReducer from "./game";
-import appReducer from "./app";
+import userReducer from "./user";
+import statusBarReducer from "./statusBar";
 
 const store = configureStore({
     reducer: {
-        app: appReducer,
-        game: gameReducer 
+        game: gameReducer, 
+        user: userReducer,
+        statusBar: statusBarReducer,
     }
 });
 

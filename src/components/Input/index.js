@@ -7,7 +7,7 @@ const Input = ({ type = "text", label, value, required = false, onChange }) => {
     const [isValid, setIsValid] = useState(false);
 
     const handleChange = (e) => {
-        setIsValid(e.target.value && true);
+        setIsValid(!!e.target.value);
         onChange && onChange(e.target.value);
     }
 

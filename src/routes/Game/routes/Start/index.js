@@ -8,12 +8,14 @@ import Layout from "components/Layout";
 import PokemonCard from "components/PokemonCard";
 import Loader from "components/Loader";
 
+import { usePokeDb } from "context/PokeDb";
 import * as gameStore from "store/game";
-import * as appStore from "store/app";
+import * as statusBar from "store/statusBar";
 
 const StartPage = () => {
 
     const dispatch = useDispatch();
+    const pokeDb = usePokeDb();
     const player1Deck = useSelector(gameStore.player1DeckGet);
     const player1Start = useSelector(gameStore.player1StartGet);
 
@@ -32,21 +34,21 @@ const StartPage = () => {
             initState.current = "initPending";
 
             dispatch(gameStore.player1StartClean());
-            dispatch(gameStore.player1DeckFetch());
+            dispatch(gameStore.player1DeckFetch({ props: { pokeDb } }));
 
             return;
         }
 
         if (initState.current !== "initPending") return;
 
-        if (player1Deck.loading === "pending") return;
+        if (player1Deck.isPending) return;
 
         initState.current = "initResolved";
 
         if (!player1Deck.data) return;
         setPokemons(player1Deck.data);
 
-    }, [player1Deck, dispatch])
+    }, [player1Deck, dispatch, pokeDb])
 
 
 
@@ -76,9 +78,9 @@ const StartPage = () => {
     }
 
     useEffect(() => {
-        dispatch(appStore.setNavBarStatusMsg({ 
-            exact:true,
-            text: `Selected ${Object.keys(player1Start || {}).length} cards out of ${nReadyToStart}` 
+        dispatch(statusBar.setStatusMsg({
+            exact: true,
+            text: `Selected ${Object.keys(player1Start || {}).length} cards out of ${nReadyToStart}`
         }));
     }, [player1Start, dispatch])
 
@@ -107,7 +109,7 @@ const StartPage = () => {
 
                 <div className={style.flex}>
 
-                    {player1Deck.loading === "pending" && <Loader />}
+                    {player1Deck.isPending && <Loader />}
 
                     {
                         Object.entries(pokemons).map(([uid, item]) =>
