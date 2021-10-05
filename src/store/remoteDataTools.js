@@ -1,36 +1,57 @@
 
 export const remoteDataDefault = {
-    loading: "idle",
+    isPending: false,
+    isFullfilled: false,
+    isResolved: false,
+    isRejected: false,
     data: null,
     error: null
 };
 
 export const remoteDataReducer = (stateField) => (state, { payload: { type, data, error } }) => {
+
     switch (type) {
         case "init":
-            return ({ ...state, [stateField]: { ...remoteDataDefault, loading: "pending" } });
+            {
+                const newState = { ...remoteDataDefault, isPending: true };
+                return stateField ? { ...state, [stateField]: newState } : { ...state, ...newState };
+            }
 
         case "resolve":
-            return ({ ...state, [stateField]: { ...state[stateField], data, loading: "idle" } });
+            {
+                const newState = { ...remoteDataDefault, data, isResolved: true, isFullfilled: true };
+                return stateField ? { ...state, [stateField]: newState } : { ...state, ...newState };
+            }
 
         case "reject":
-            return ({ ...state, [stateField]: { ...state[stateField], error, loading: "idle" } });
+            {
+                const newState = { ...remoteDataDefault, error, isRejected: true, isFullfilled: true };
+                return stateField ? { ...state, [stateField]: newState } : { ...state, ...newState };
+            }
         default:
-            return ({ ...state, [stateField]: { ...remoteDataDefault } })
+            {
+                const nextState = { ...remoteDataDefault };
+                return stateField ? { ...state, [stateField]: nextState } : { ...state, ...nextState };
+            }
     }
 }
 
-export const remoteDataFetcher = (action, resolver, rejecter) => (...resolverArgs) => async (dispatch) => {
+export const remoteDataFetcher = (action, resolver, rejecter) => (actionProps) => async (dispatch) => {
 
-    dispatch(action({ type: "init" }));
+    const {init=true, props} = (actionProps || {});
+
+    if (action && dispatch && init) dispatch(action({ type: "init" }));
 
     try {
-        const data = await resolver(...resolverArgs);
-        dispatch(action({ type: "resolve", data }));
+        const data = await resolver(props);
+        if (action && dispatch) dispatch(action({ type: "resolve", data }));
+        return { data };
     }
     catch (err) {
-        const errHandled = (rejecter || ((err) => err))(err)
-        dispatch(action({ type: "reject", error: errHandled.toString() }))
+        const errHandled = (rejecter || (err => err))(err);
+        const errMsg = errHandled?.message || String(errHandled);
+        if (action && dispatch) dispatch(action({ type: "reject", error: errMsg }));
+        return { error: errMsg };
     }
 };
 

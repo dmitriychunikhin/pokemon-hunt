@@ -1,9 +1,8 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { NotificationManager } from "react-notifications";
-import { useDispatch, useSelector} from "react-redux";
 
-import { selectIsLoggedIn, setAuthIdToken } from "store/app";
-
+import * as userStore from "store/user";
 
 import Menu from "components/Menu";
 import NavBar from "components/NavBar";
@@ -12,20 +11,13 @@ import Modal from "components/Modal";
 import LoginForm from "components/LoginForm";
 
 
-
-import { firebaseConfig } from "services/PokeDb";
-const apiKey = firebaseConfig.apiKey;
-
-
-const MenuHeader = ({ bgActive, statusMsg }) => {
-
-    const [isMenuActive, setMenuActive] = useState(null);
-    
-    const [isLoginActive, setLoginActive] = useState(false);
+const MenuHeader = ({ bgActive }) => {
 
     const dispatch = useDispatch();
-    const isLoggedIn = useSelector(selectIsLoggedIn); 
-    
+
+    const [isMenuActive, setMenuActive] = useState(null);
+    const [isLoginActive, setLoginActive] = useState(false);
+
     const handleMenuItemSelect = () => {
         setMenuActive(false);
     }
@@ -38,55 +30,21 @@ const MenuHeader = ({ bgActive, statusMsg }) => {
         setLoginActive(true);
     }
 
+    const handleLoginSubmit = async ({ email, password, isSignUp }) => {
+        const res = await dispatch(userStore.signUpInFetch({ props: { email, password, isSignUp } }));
 
-    const handleSubmit = async ({ email, password, isSignUp }) => {
+        if (res.error) {
+            NotificationManager.error(res.error, 'Auth');
+        }
+        else if (res.data) {
 
-        const login = (idToken) => {
             setLoginActive(false);
-            dispatch(setAuthIdToken({idToken}));
             NotificationManager.success("Successful login", 'Auth');
-        }
 
-        if (isSignUp) {
-            const resSignUp = await (await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    returnSecureToken: true
-                }),
-            })).json();
-
-            if (resSignUp.error) {
-                if (resSignUp?.error?.message) { NotificationManager.error(resSignUp.error.message, 'Auth'); }
-            } else {
-                login(resSignUp.idToken);
-            }
-
-        } else {
-
-            const resSignIn = await (await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email,
-                    password,
-                    returnSecureToken: true
-                }),
-            })).json();
-
-            if (resSignIn.error) {
-                if (resSignIn?.error?.message) { NotificationManager.error(resSignIn.error.message, 'Auth'); }
-            } else {
-                login(resSignIn.idToken);
-            }
+            dispatch(userStore.userFetch({ init: false }));
 
         }
+
     }
 
     return (
@@ -99,14 +57,12 @@ const MenuHeader = ({ bgActive, statusMsg }) => {
             <NavBar
                 onHamburgerClick={handleHamburgerClick}
                 onLoginClick={handleLoginClick}
-                isLoggedIn={isLoggedIn}
                 isActive={isMenuActive}
                 bgActive={bgActive}
-                statusMsg={statusMsg}
             />
 
             <Modal title="Enter your credentials" isOpen={isLoginActive} onClose={() => { setLoginActive(false) }}>
-                <LoginForm onSubmit={handleSubmit} isReset={!isLoginActive || isLoggedIn} />
+                <LoginForm onSubmit={handleLoginSubmit} isReset={!isLoginActive} />
             </Modal>
         </>
     );

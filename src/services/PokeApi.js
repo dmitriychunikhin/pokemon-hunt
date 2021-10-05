@@ -6,13 +6,18 @@ class PokeApi {
     return res.data;
   }
 
-  createPlayer = async () => {
+  getNewUserStarterPack = async () => {
+    const res = await (await fetch("https://reactmarathon-api.herokuapp.com/api/pokemons/starter")).json();
+    return res.data;
+  }
+
+  getPlayer2 = async () => {
     const res = await (await fetch("https://reactmarathon-api.netlify.app/api/create-player")).json();
     return res.data;
   }
 
-  makeTurn = async ({position, card, board}) => {
-    
+  makeTurn = async ({ position, card, board }) => {
+
     const params = {
       position,
       card,

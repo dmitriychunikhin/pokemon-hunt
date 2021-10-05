@@ -1,21 +1,34 @@
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import cn from "classnames";
 import style from "./style.module.css";
 import { ReactComponent as LoginSVG } from "assets/Login.svg";
+import { ReactComponent as UserSVG } from "assets/User.svg";
 
-const NavBar = ({ isActive, bgActive, isLoggedIn, onLoginClick, onHamburgerClick, statusMsg }) => {
+import * as userStore from "store/user";
+import * as statusBar from "store/statusBar";
+
+const NavBar = ({ isActive, bgActive, onLoginClick, onHamburgerClick }) => {
+
+    const user = useSelector(userStore.selectUser);
+    const isUserLoggedIn = useSelector(userStore.selectIsLoggedIn);
+    const statusMsg = useSelector((state) => statusBar.selectStatusMsgText(state));
 
     return (
         <nav className={cn(style.root, { [style.bgActive]: bgActive })}>
             <div className={style.navWrapper}>
                 <p className={style.brand}>
-                    LOGO
+                    <Link to="/">LOGO</Link>
                 </p>
+
                 <div className={style.statusMsg}>{statusMsg}</div>
+
 
                 <div className={style.loginAndHamburger}>
 
-                    <div className={cn(style.loginButton, {[style.isLoggedIn]:isLoggedIn})}>
-                        <LoginSVG onClick={onLoginClick} />
+                    <div className={style.loginButton}>
+                        {!isUserLoggedIn && !user.isPending && <LoginSVG onClick={onLoginClick} />}
+                        {isUserLoggedIn && <Link to="/user"><UserSVG /></Link>}
                     </div>
 
                     <div
@@ -25,6 +38,7 @@ const NavBar = ({ isActive, bgActive, isLoggedIn, onLoginClick, onHamburgerClick
                         <span />
                     </div>
                 </div>
+
             </div>
         </nav >
     );
