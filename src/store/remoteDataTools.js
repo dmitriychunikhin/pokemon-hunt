@@ -9,36 +9,30 @@ export const remoteDataDefault = {
 };
 
 export const remoteDataReducer = (stateField) => (state, { payload: { type, data, error } }) => {
+    let newState = { ...remoteDataDefault };
 
     switch (type) {
         case "init":
-            {
-                const newState = { ...remoteDataDefault, isPending: true };
-                return stateField ? { ...state, [stateField]: newState } : { ...state, ...newState };
-            }
+            newState = { ...newState, isPending: true };
+            break;
 
         case "resolve":
-            {
-                const newState = { ...remoteDataDefault, data, isResolved: true, isFullfilled: true };
-                return stateField ? { ...state, [stateField]: newState } : { ...state, ...newState };
-            }
+            newState = { ...newState, data, isResolved: true, isFullfilled: true };
+            break;
 
         case "reject":
-            {
-                const newState = { ...remoteDataDefault, error, isRejected: true, isFullfilled: true };
-                return stateField ? { ...state, [stateField]: newState } : { ...state, ...newState };
-            }
+            newState = { ...newState, error, isRejected: true, isFullfilled: true };
+            break;
+
         default:
-            {
-                const nextState = { ...remoteDataDefault };
-                return stateField ? { ...state, [stateField]: nextState } : { ...state, ...nextState };
-            }
+            break;
     }
+    return stateField ? { ...state, [stateField]: newState } : { ...state, ...newState };
 }
 
 export const remoteDataFetcher = (action, resolver, rejecter) => (actionProps) => async (dispatch) => {
 
-    const {init=true, props} = (actionProps || {});
+    const { init = true, props } = (actionProps || {});
 
     if (action && dispatch && init) dispatch(action({ type: "init" }));
 

@@ -2,7 +2,7 @@
 class PokeApi {
 
   getBoard = async () => {
-    const res = await (await fetch("https://reactmarathon-api.netlify.app/api/board")).json();
+    const res = await (await fetch("https://reactmarathon-api.herokuapp.com/api/pokemons/board")).json();
     return res.data;
   }
 
@@ -11,29 +11,38 @@ class PokeApi {
     return res.data;
   }
 
-  getPlayer2 = async () => {
-    const res = await (await fetch("https://reactmarathon-api.netlify.app/api/create-player")).json();
+  getPlayer2 = async ({ player1Start }) => {
+    const res = await (await fetch("https://reactmarathon-api.herokuapp.com/api/pokemons/game/start", {
+      method: "POST",
+      body: JSON.stringify({
+        pokemons: player1Start
+      })
+    })).json();
     return res.data;
   }
 
-  makeTurn = async ({ position, card, board }) => {
+  makeTurn = async ({ currentPlayer, move: { card, position }, hands: { player1Cards, player2Cards }, board }) => {
 
     const params = {
-      position,
-      card,
-      board
-    };
-
-    const res = await fetch('https://reactmarathon-api.netlify.app/api/players-turn', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+      currentPlayer: `p${currentPlayer}`,
+      hands: {
+        p1: player1Cards,
+        p2: player2Cards
       },
-      body: JSON.stringify(params),
+      move: currentPlayer === 2 ? null : {
+        poke: card,
+        position: position
+      },
+      board
+    }
+
+    const res = await fetch('https://reactmarathon-api.herokuapp.com/api/pokemons/game', {
+      method: 'POST',
+      body: JSON.stringify(params)
     });
 
     const request = await res.json();
-    return request.data;
+    return request;
   }
 
 }

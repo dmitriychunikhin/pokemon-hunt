@@ -36,6 +36,7 @@ const BoardPage = () => {
     const [player1Cards, setPlayer1Cards] = useState([]);
     const [player2Cards, setPlayer2Cards] = useState([]);
     const [boardState, setBoardState] = useState([]);
+    const [boardServerState, setBoardServerState] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0]);
     const [cardSelected, setCardSelected] = useState({ id: "", player: "" });
     const [turnCount, setTurnCount] = useState(0);
     const [matchResults, setMatchResults] = useState({ type: null });
@@ -45,6 +46,7 @@ const BoardPage = () => {
     if (Object.keys(player1Start).length === 0) {
         history.replace("/game");
     }
+
 
 
     //////////////////////////////////////////////////////////////////////
@@ -68,7 +70,7 @@ const BoardPage = () => {
                 possession: player1ID
             })));
 
-            dispatch(gameStore.player2StartFetch());
+            dispatch(gameStore.player2StartFetch({ props: { player1Start: Object.values(player1Start) } }));
 
             return;
         }
@@ -83,20 +85,33 @@ const BoardPage = () => {
 
         flowStep.current = "initPlayerSelection";
 
-        let timeoutId = setTimeout(() => {
-            setCurPlayer(Math.floor(Math.random() * playerOrder.length));
-            flowStep.current = "play";
-        }, startPlayerSelectionDelay);
-
         setPlayer2Cards(player2Start.data.map(item => ({
             ...item,
             player: player2ID,
             possession: player2ID
         })));
 
+        let timeoutId = setTimeout(() => {
+            setCurPlayer(Math.floor(Math.random() * playerOrder.length));
+            flowStep.current = "beginMatch";
+        }, startPlayerSelectionDelay);
+
         return () => { clearTimeout(timeoutId); }
 
-    }, [boardState?.length, player1Start, player2Start, playerOrder, dispatch])
+    }, [boardState, player1Start, player2Start, playerOrder, dispatch])
+
+
+    //If Player2 begins match 
+    useEffect(() => {
+        if (flowStep.current !== "beginMatch") return;
+        flowStep.current = "play";
+
+        if (curPlayer === 1) {
+            makeTurn({});
+        }
+
+    })
+
 
 
     //End game conditions
@@ -158,17 +173,30 @@ const BoardPage = () => {
     //////////////////////////////////////////////////////////////////////
     const handleCardSelect = (card) => {
         if (curPlayer === null) return;
-        if (card?.id && checkIsTurnProcessing()) return;
+
+        if (card.player !== player1ID) {
+            //not my card 
+            return
+        }
+
+        if (checkIsTurnProcessing()) return;
 
         if (card.player !== playerOrder[curPlayer]) {
             alert("It's not your turn");
             return;
         }
+
         setCardSelected(card);
     }
 
+
     const handleBoardClick = ({ position, card }) => {
-        makeTurn({ position, card });
+        if (card?.id) return;
+        if (!cardSelected?.id) return;
+        if (checkIsTurnProcessing()) return;
+
+        makeTurnAnimPlayer1({ position, card: cardSelected });
+        makeTurn({ position, card: cardSelected });
     }
 
 
@@ -179,52 +207,98 @@ const BoardPage = () => {
 
     const checkIsTurnProcessing = () => (!!turnProcessingState);
 
-    const makeTurn = async ({ position, card }) => {
-
-        if (card?.id) return;
-        if (!cardSelected?.id) return;
-
-        if (checkIsTurnProcessing()) {
-            return;
-        }
-
-        setTurnProcessingState(cardSelected.player);
-
+    const makeTurnAnimPlayer1 = ({ position, card }) => {
 
         //Put the card on board in pending state for animation purposes
         setBoardState((prev) => {
             const newBS = [...prev];
-            newBS[position - 1] = { ...newBS[position - 1], card: cardSelected, pending: true };
+            newBS[position - 1] = { ...newBS[position - 1], card, pending: turnCount !== 0 ? true : false };
             return newBS;
         });
 
+        //Remove played card from player's assets for animation purposes
+        if (card.player === player1ID) {
+            setPlayer1Cards(prev => prev.filter((item) => item.id !== card.id));
+        }
+
+        setCardSelected({});
+
+    }
+
+    const makeTurn = async ({ position, card }) => {
+
+        setTurnProcessingState(true);
 
         //Request turn results from PokeAPI
         const params = {
-            position,
-            card: cardSelected,
-            board: boardState
+            currentPlayer: curPlayer + 1,
+            move: { card, position },
+            hands: {
+                player1Cards,
+                player2Cards
+            },
+            board: boardServerState
         };
 
         const newBS = await pokeApi.makeTurn(params);
 
-        //Remove played card from player's assets
-        if (cardSelected.player === player1ID) {
-            setPlayer1Cards(prev => prev.filter((item) => item.id !== cardSelected.id));
+
+        //Show Player1 turn results
+        if (curPlayer === 0) {
+            setBoardState(prev => newBS.oldBoard.map((item, index) => {
+                if (!item?.poke) return prev[index];
+
+                return {
+                    ...prev[index],
+                    card: {
+                        ...item.poke,
+                        possession: item.holder === "p1" ? player1ID : player2ID
+                    },
+                    pending: false
+                }
+            }));
+
+            //Set next step/turn 
+            setTurnCount(prev => prev + 1);
+            setCurPlayer(prev => (prev + 1) % (playerOrder.length || 1));
         }
 
-        if (cardSelected.player === player2ID) {
-            setPlayer2Cards(prev => prev.filter((item) => item.id !== cardSelected.id));
+
+        if ((turnCount + 1) !== maxTurnCount) {
+
+            //Show Player2 card selection 
+            await (new Promise((resolve) => { setTimeout(resolve, 1500); }));
+            setCardSelected(newBS.move.poke);
+
+
+            //Show Player2 turn results
+            await (new Promise((resolve) => { setTimeout(resolve, 1000); }));
+
+            setPlayer1Cards(newBS.hands.p1.pokes.map(item => item.poke));
+            setPlayer2Cards(newBS.hands.p2.pokes.map(item => item.poke));
+
+
+            //Finalize board
+            setBoardState(prev => newBS.board.map((item, index) => {
+                if (!item?.poke) return prev[index];
+
+                return {
+                    ...prev[index],
+                    card: {
+                        ...item.poke,
+                        possession: item.holder === "p1" ? player1ID : player2ID
+                    }
+                }
+            }));
+
+            setBoardServerState(newBS.board);
+
+            //Set next step/turn 
+            setTurnCount(prev => prev + 1);
+            setCurPlayer(prev => (prev + 1) % (playerOrder.length || 1));
         }
 
-        //Finilize board
-        setBoardState(newBS);
-
-        //Set next step/turn 
-        setTurnCount(prev => prev + 1);
-
-        setCurPlayer(prev => (prev + 1) % (playerOrder.length || 1));
-        setTurnProcessingState(null);
+        setTurnProcessingState(false);
         setCardSelected({});
     }
 
@@ -286,8 +360,9 @@ const BoardPage = () => {
             <div className={style.playerTwo}>
 
                 {player2Start.isPending && <Loader />}
+                {player2Start.isFullfilled && !player2Start.data && <h1>loading error, restart game</h1>}
 
-                {
+                {player2Start.isResolved &&
                     <PlayerBoard
                         cards={player2Cards}
                         cardSelected={cardSelected.player === player2ID && cardSelected}

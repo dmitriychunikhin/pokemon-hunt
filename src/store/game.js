@@ -45,7 +45,7 @@ export const player2StartGet = (state) => state.game.player2Start;
 
 export const player2StartFetch = remoteDataFetcher(
     slice.actions.player2StartFetch,
-    async () => pokeApi.getPlayer2()
+    async ({ player1Start }) => pokeApi.getPlayer2({ player1Start })
 );
 
 export const matchResultsGet = (state) => state.game.matchResults;
