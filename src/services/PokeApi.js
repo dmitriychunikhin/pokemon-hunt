@@ -1,23 +1,25 @@
 
+import {fetchJSON} from "./fetchTools"
+
 class PokeApi {
 
   getBoard = async () => {
-    const res = await (await fetch("https://reactmarathon-api.herokuapp.com/api/pokemons/board")).json();
+    const res = await fetchJSON("https://reactmarathon-api.herokuapp.com/api/pokemons/board");
     return res.data;
   }
 
   getNewUserStarterPack = async () => {
-    const res = await (await fetch("https://reactmarathon-api.herokuapp.com/api/pokemons/starter")).json();
+    const res = await fetchJSON("https://reactmarathon-api.herokuapp.com/api/pokemons/starter");
     return res.data;
   }
 
   getPlayer2 = async ({ player1Start }) => {
-    const res = await (await fetch("https://reactmarathon-api.herokuapp.com/api/pokemons/game/start", {
+    const res = await fetchJSON("https://reactmarathon-api.herokuapp.com/api/pokemons/game/start", {
       method: "POST",
       body: JSON.stringify({
         pokemons: player1Start
       })
-    })).json();
+    });
     return res.data;
   }
 
@@ -36,13 +38,12 @@ class PokeApi {
       board
     }
 
-    const res = await fetch('https://reactmarathon-api.herokuapp.com/api/pokemons/game', {
+    const res = await fetchJSON('https://reactmarathon-api.herokuapp.com/api/pokemons/game', {
       method: 'POST',
       body: JSON.stringify(params)
     });
 
-    const request = await res.json();
-    return request;
+    return res;
   }
 
 }

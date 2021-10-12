@@ -4,6 +4,7 @@ import cn from "classnames";
 import style from "./style.module.css";
 import { ReactComponent as LoginSVG } from "assets/Login.svg";
 import { ReactComponent as UserSVG } from "assets/User.svg";
+import logo from "assets/logo.png";
 
 import * as userStore from "store/user";
 import * as statusBar from "store/statusBar";
@@ -18,7 +19,7 @@ const NavBar = ({ isActive, bgActive, onLoginClick, onHamburgerClick }) => {
         <nav className={cn(style.root, { [style.bgActive]: bgActive })}>
             <div className={style.navWrapper}>
                 <p className={style.brand}>
-                    <Link to="/">LOGO</Link>
+                    <Link to="/"><img src={logo} alt="Logo" /></Link>
                 </p>
 
                 <div className={style.statusMsg}>{statusMsg}</div>

@@ -88,28 +88,26 @@ const StartPage = () => {
     return (
         <>
             <Layout
-                id="cards"
                 colorTitle="#fafafa"
                 colorBg="#252934"
                 title="Start gaming now!"
             >
                 <div className={style.toolbar}>
-                    {isReadyToStart && (
-                        <div className={style.wrap}>
+                    <div className={style.wrap}>
+                        {isReadyToStart && (
                             <button onClick={handleStartGame}>Start Game</button>
-                        </div>
-                    )}
-                    {!isReadyToStart && (
-                        <div className={style.wrap}>
+                        )}
+                        {!isReadyToStart && (
                             <h1>Select {nReadyToStart} pokemons to start game</h1>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
 
 
                 <div className={style.flex}>
 
                     {player1Deck.isPending && <Loader />}
+                    {player1Deck.isRejected && player1Deck.error}
 
                     {
                         Object.entries(pokemons).map(([uid, item]) =>

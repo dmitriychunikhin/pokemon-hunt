@@ -11,6 +11,7 @@ import Loader from "components/Loader";
 import { useHistory } from 'react-router-dom';
 import pokeApi from 'services/PokeApi';
 import * as gameStore from "store/game";
+import * as userStore from 'store/user';
 
 
 const BoardPage = () => {
@@ -29,6 +30,7 @@ const BoardPage = () => {
     const dispatch = useDispatch();
     const player1Start = useSelector(gameStore.player1StartGet);
     const player2Start = useSelector(gameStore.player2StartGet);
+    const user = useSelector(userStore.selectUser);
 
     //In-match states
     const [playerOrder] = useState([player1ID, player2ID]);
@@ -60,9 +62,15 @@ const BoardPage = () => {
         if (flowStep.current === "init") {
             flowStep.current = "initPending";
 
-            pokeApi.getBoard().then((data) => {
-                setBoardState(data)
-            });
+            try {
+                pokeApi.getBoard().then((data) => {
+                    setBoardState(data)
+                });
+            } catch (err) {
+                history.replace("/");
+                return;
+            }
+
 
             setPlayer1Cards(Object.values(player1Start).map(item => ({
                 ...item,
@@ -98,7 +106,7 @@ const BoardPage = () => {
 
         return () => { clearTimeout(timeoutId); }
 
-    }, [boardState, player1Start, player2Start, playerOrder, dispatch])
+    }, [boardState, player1Start, player2Start, playerOrder, dispatch, history])
 
 
     //If Player2 begins match 
@@ -240,7 +248,14 @@ const BoardPage = () => {
             board: boardServerState
         };
 
-        const newBS = await pokeApi.makeTurn(params);
+
+        let newBS = null;
+        try {
+            newBS = await pokeApi.makeTurn(params);
+        } catch (err) {
+            history.replace("/");
+            return;
+        }
 
 
         //Show Player1 turn results
@@ -322,6 +337,9 @@ const BoardPage = () => {
 
             <div className={style.playerOne}>
                 <PlayerBoard
+                    playerName={user.data.username}
+                    playerColorClass={style["playerOne--color"]}
+                    isActive={curPlayer === 0}
                     cards={player1Cards}
                     cardSelected={cardSelected.player === player1ID && cardSelected}
                     onCardSelect={handleCardSelect}
@@ -337,7 +355,7 @@ const BoardPage = () => {
                             className={style.boardPlate}
                             onClick={() => { handleBoardClick({ position, card }) }}
                         >
-                            {!card && position}
+                            <div className={style.cellNumber}>{!card && position}</div>
 
                             {card &&
                                 <PokemonCard
@@ -364,6 +382,9 @@ const BoardPage = () => {
 
                 {player2Start.isResolved &&
                     <PlayerBoard
+                        playerName="AI"
+                        playerColorClass={style["playerTwo--color"]}
+                        isActive={curPlayer === 1}
                         cards={player2Cards}
                         cardSelected={cardSelected.player === player2ID && cardSelected}
                         onCardSelect={handleCardSelect}

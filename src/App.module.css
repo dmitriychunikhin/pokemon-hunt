@@ -1,8 +1,19 @@
 .wrap {
-    min-height: calc(100vh - 100px);
-    padding: 96px 32px 24px;
+  min-height: calc(100vh - 100px);
+  padding: 70px 10px 24px;
 }
 
-.wrap.isHomePage {
-    padding: 0;
+.wrap.fullscreen {
+  padding: 0;
+  margin: 0;
+}
+
+@media only screen and (max-width: 500px), screen and (max-height: 500px) {
+  .wrap {
+    padding: 70px 0px 24px;
+  }
+
+  .wrap.fullscreen {
+    padding: 0px;
+  }
 }

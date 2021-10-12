@@ -1,5 +1,6 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/database";
+import { fetchJSON } from "./fetchTools";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -28,7 +29,7 @@ class PokeDb {
     this._userIdToken = userIdToken;
   }
 
-  checkRESTApiErr(res) {
+  chekRESTApiErr(res) {
     if (!res) return;
     if (res.error) {
       throw new Error(res.error);
@@ -38,8 +39,8 @@ class PokeDb {
 
   getPokemonOnce = async () => {
     //return await this.db.ref(dbPokemonsPath).once("value").then((snapshot) => snapshot.val());
-    const res = await (await fetch(`${firebaseConfig.databaseURL}/${this._userLocalId}/${dbPokemonsPath}.json?auth=${this._userIdToken}`)).json();
-    this.checkRESTApiErr(res);
+    const res = await fetchJSON(`${firebaseConfig.databaseURL}/${this._userLocalId}/${dbPokemonsPath}.json?auth=${this._userIdToken}`);
+    this.chekRESTApiErr(res);
     return res;
   }
 
@@ -59,13 +60,12 @@ class PokeDb {
 
 
   addPokemon = async (pokemon) => {
-    const res = await (await fetch(`${firebaseConfig.databaseURL}/${this._userLocalId}/${dbPokemonsPath}.json?auth=${this._userIdToken}`, {
+    const res = await fetchJSON(`${firebaseConfig.databaseURL}/${this._userLocalId}/${dbPokemonsPath}.json?auth=${this._userIdToken}`, {
       method: "POST",
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(pokemon)
-    })).json();
-
-    this.checkRESTApiErr(res);
+    });
+    this.chekRESTApiErr(res);
 
     return res;
   }

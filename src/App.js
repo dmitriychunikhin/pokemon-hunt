@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Switch, Route, Redirect, useLocation, } from "react-router-dom";
+import { Switch, Route, Redirect, useLocation } from "react-router-dom";
 
 import { PokeDbContext } from "context/PokeDb";
 import PokeDb from "services/PokeDb";
@@ -14,6 +14,7 @@ import cn from "classnames";
 import PrivateRoute from "components/PrivateRoute";
 import MenuHeader from "components/MenuHeader";
 import Footer from "components/Footer";
+import Loader from "components/Loader";
 import HomePage from "./routes/Home";
 import GamePage from "./routes/Game";
 import AboutPage from "./routes/About";
@@ -28,7 +29,7 @@ const App = () => {
 
 
   const location = useLocation();
-  const isBgActive = (location.pathname === "/" || location.pathname === "/game/board");
+  const isFullscreen = ["/", "/login", "/game/board"].includes(location.pathname);
 
   const dispatch = useDispatch();
   const user = useSelector(userStore.selectUser);
@@ -41,8 +42,13 @@ const App = () => {
 
   }, [user, dispatch])
 
-  if (user.isPending) {
-    return "Loading...";
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+
+  if (!user.isFullfilled) {
+    return <Loader />;
   }
 
 
@@ -52,11 +58,12 @@ const App = () => {
         <Route path="/notfound" component={NotFoundPage} />
         <Route>
           <>
-            <MenuHeader bgActive={!isBgActive} />
+            <MenuHeader bgActive={!isFullscreen} />
 
-            <div className={cn(style.wrap, { [style.isHomePage]: isBgActive })}>
+            <div className={cn(style.wrap, { [style.fullscreen]: isFullscreen })}>
               <Switch>
                 <Route path="/" exact component={HomePage} />
+                <Route path="/login" exact component={HomePage} />
                 <PrivateRoute path="/game" component={GamePage} />
                 <PrivateRoute path="/about" component={AboutPage} />
                 <PrivateRoute path="/user" component={UserPage} />

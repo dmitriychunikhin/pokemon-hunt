@@ -10,7 +10,7 @@ const PokemonCard = ({ id, name, type, img, values = {}, minimize, className, po
     }
 
     return (
-        <div className={cn(className, style.pokemonCard, { [style.active]: isActive, [style.selected]: isSelected, [style.blinking]: blinking })} onClick={handleClick}>
+        <div className={cn(className, style.pokemonCard, { [style.minimize]:minimize, [style.active]: isActive, [style.selected]: isSelected, [style.blinking]: blinking })} onClick={handleClick}>
             <div className={style.cardFront}>
                 <div className={cn(style.wrap, style.front,)}>
                     <div className={cn([style[`possession--${possession}`]], style.pokemon, style[type])}>

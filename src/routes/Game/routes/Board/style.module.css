@@ -1,48 +1,60 @@
 .root {
-    background-image: url(./assets/board.png);
-    background-size: cover;
-    background-repeat: no-repeat;
-    height: calc(100vw / 1.71);
-    position: relative;
+  background-image: url(./assets/board.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: calc(100vw / 1.71);
+  position: relative;
 }
 
 .board {
-    display: grid;
-    grid-template-columns: auto auto auto;
-    position: absolute;
-    width: 50.3vw;
-    height: 50.3vw;
-    top: 4.3vw;
-    left: 25.1vw;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  position: absolute;
+  width: 50.3vw;
+  height: 50.3vw;
+  top: 4.3vw;
+  left: 25.1vw;
 }
 
 .boardPlate {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 6px;
-    cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  cursor: pointer;
 }
+.cellNumber {
+  display: inline;
+  font-size: 24px;
+}
+
 .boardPlate:hover {
-    background: rgba(255,255,255, .1);
+  background: rgba(255, 255, 255, 0.1);
 }
 .boardPlate.disabled:hover {
-    background: none;
+  background: none;
 }
 
-
 .playerOne {
-    position: absolute;
-    top: 9vh;
-    left: 2vw;
-    width: 20vw;
-    height: 50.3vh;
+  position: absolute;
+  top: 60px;
+  left: 25px;
+  width: 17vw;
+  height: 50.3vh;
+}
+.playerOne--color {
+  background: #7777dd;
 }
 
 .playerTwo {
-    position: absolute;
-    top: 9vh;
-    right: 2vw;
-    width: 20vw;
-    height: 50.3vh;
+  position: absolute;
+  justify-content: right;
+  top: 60px;
+  right: 25px;
+  width: 17vw;
+  height: 50.3vh;
+}
+
+.playerTwo--color {
+  background: #dd7777;
 }

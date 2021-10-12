@@ -1,13 +1,44 @@
+.playerName {
+    color: white;
+    margin: 0 auto;
+    font-size: 24px;
+    margin-bottom: 5px;
+    overflow: hidden;
+    text-align: center;
+    border-radius: 10px;
+    border: solid transparent 3px;
+}
+
+.playerName.active {
+    border: solid gold 3px;
+    animation: active 0.5s ease-in-out reverse; 
+}
+@keyframes active {
+   to {
+       border-color: transparent;
+   }
+}
+
+@media only screen and (max-width: 500px), screen and (max-height: 500px) {
+    .playerName {
+        font-size: 12px;
+    }
+}
+
+.cards {
+    height: 100%;
+}
+
 .card {
-    max-height: 14.8vw;
-    margin-top: -6vw;
+  max-height: 13.5vw;
+  max-width: 17vw;
+  margin-top: -30%;
 }
 
 .card:first-child {
-    margin-top: 0;
+  margin-top: 0px;
 }
 
 .card.selected {
-    margin-left: 2vw;
+  margin-left: 2vw;
 }
-

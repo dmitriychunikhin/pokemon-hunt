@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { NotificationManager } from "react-notifications";
+import { useLocation } from "react-router-dom";
 
 import * as userStore from "store/user";
 
@@ -15,8 +16,10 @@ const MenuHeader = ({ bgActive }) => {
 
     const dispatch = useDispatch();
 
+    const location = useLocation();
+
     const [isMenuActive, setMenuActive] = useState(null);
-    const [isLoginActive, setLoginActive] = useState(false);
+    const [isLoginActive, setLoginActive] = useState();
 
     const handleMenuItemSelect = () => {
         setMenuActive(false);
@@ -46,6 +49,12 @@ const MenuHeader = ({ bgActive }) => {
         }
 
     }
+
+    useEffect(()=>{
+        if (location.pathname === "/login") {
+            setLoginActive(true);
+        }
+    },[location.pathname])
 
     return (
         <>

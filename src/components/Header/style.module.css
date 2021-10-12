@@ -140,10 +140,9 @@
 
 @media only screen and (max-width: 649px) {
     .container {
-        right: 50%;
-        top: 10%;
+        left: 50%;
+        top: 50%;
         width: 80%;
-        transform: translate(50%, 0);
         animation: text-fade-in 1000ms 800ms forwards;
     }
 

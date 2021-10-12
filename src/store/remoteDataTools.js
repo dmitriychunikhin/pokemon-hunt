@@ -48,4 +48,3 @@ export const remoteDataFetcher = (action, resolver, rejecter) => (actionProps) =
         return { error: errMsg };
     }
 };
-

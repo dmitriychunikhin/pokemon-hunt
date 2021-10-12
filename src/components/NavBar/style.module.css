@@ -2,9 +2,7 @@
   position: fixed;
   z-index: 9999;
   width: 100%;
-  padding: 1rem;
-  display: flex;
-  justify-content: center;
+  pointer-events: none;
 }
 
 .root.bgActive {
@@ -16,18 +14,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1400px;
-  padding: 0 2rem;
+  padding: 5px 20px 0px 10px;
 }
 
 .root .brand {
   font-size: 1.6rem;
   color: #fafafa;
   cursor: default;
+  pointer-events: all;
 }
 .root .brand a,
 .root .brand a:hover {
   color: #fafafa;
+  display: block;
+  margin: 0;
+}
+.brand img {
+  height: 45px;
+  margin: 0;
 }
 
 .root .statusMsg {
@@ -93,14 +97,10 @@ div.menuButton {
   top: 0px;
 }
 
-@media only screen and (max-width: 849px) {
-  .root.bgActive {
-    background: #181d23aa;
-  }
-}
-
 .loginAndHamburger {
+  position: relative;
   display: flex;
+  pointer-events: all;
 }
 
 .loginButton {
@@ -121,4 +121,16 @@ div.menuButton {
 
 .loginButton:hover g {
   fill: #f300b4;
+}
+
+@media only screen and (max-width: 849px) {
+  .root.bgActive {
+    background: #181d23aa;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .loginButton {
+    margin-right: 5px;
+  }
 }
